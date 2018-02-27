@@ -137,3 +137,4 @@ venv.bak/
 *.iml
 out
 gen
+*/migrations/
