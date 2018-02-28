@@ -1,0 +1,9 @@
+.site-footer {
+    background-color: #dddddd;
+    border-top: 4px #cdcdcd solid;
+    min-height: 10rem;
+}
+
+#demo {
+    border: 1px solid black;
+}
