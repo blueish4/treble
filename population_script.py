@@ -6,6 +6,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE',
 import django
 django.setup()
 from treble_app.models import Song, Comment, UserProfile
+import datetime
 
 
 def populate():
@@ -55,31 +56,31 @@ def populate():
          "song_id": 1,
          "username": "Sir Ri",
          "message": "This is a very good song.",
-         "datetime": "01/03/18 12:53"},
+         "datetime": datetime.now(tz=None)},
 
         {"comment_id": 2,
          "song_id": 1,
          "username": "Alexa",
          "message": "I love this song!",
-         "datetime": "01/03/18 12:56"},
+         "datetime": datetime.now(tz=None)},
 
         {"comment_id": 3,
          "song_id": 2,
          "username": "Sir Ri",
          "message": "This song is amazing!",
-         "datetime": "01/03/18 13:00"},
+         "datetime": datetime.now(tz=None)},
 
         {"comment_id": 4,
          "song_id": 4,
          "username": "Bob",
          "message": "Kendrick is GOAT.",
-         "datetime": "01/03/18 13:01"},
+         "datetime": datetime.now(tz=None)},
 
         {"comment_id": 5,
          "song_id": 5,
          "username": "Bob",
          "message": "Meh, it's okay I guess",
-         "datetime": "01/03/18 13:02"}
+         "datetime": datetime.now(tz=None)}
     ]
 
     for i in range(len(songs)):
@@ -94,7 +95,7 @@ def populate():
                 add_comment(s, new_comment['comment_id'],
                             new_comment['username'], new_comment['message'], new_comment['datetime'])
 
-    # Print out Songs that have been added
+    # Print out Comments that have been added, and to which song
     for s in Song.objects.all():
         for c in Comment.objects.filter(song_id=s):
             print("- {0} - {1}".format(str(s), str(c)))
