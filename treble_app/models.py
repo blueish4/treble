@@ -12,6 +12,7 @@ class Song(models.Model):
     no_of_recommendations = models.IntegerField(null=True)
     recommended_songs = models.ManyToManyField('self', symmetrical=False)
 
+
     def __str__(self):
         return self.track_name
 
@@ -35,6 +36,7 @@ class Comment(models.Model):
     # username = models.ForeignKey(UserProfile)
     message = models.CharField(max_length=256)
     datetime = models.DateTimeField(default=datetime.now, blank=True)
+
 
     def __str__(self):
         return self.message
