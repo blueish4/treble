@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseRedirect # No need to import HttpResponse once all views return render()
 from django.core.urlresolvers import reverse
-from treble.forms import UserForm, UserProfileForm
+from treble.forms import UserForm, UserProfileForm, SongForm, CommentForm, RecommendationForm
 from treble_app.models import Song
 
 def index(request):
@@ -79,7 +79,7 @@ def register(request):
     return render(request, 'treble/register.html', {'user_form': user_form,
                                                    'profile_form': profile_form,
                                                    'registered': registered})
-                                                   
+
 @login_required # Can only view other profiles if user is logged in
 def user_profile(request, username_slug):
     user = User.objects.get(username=username_slug)
@@ -95,7 +95,9 @@ def song(request, song_name_slug):
 
     try:
         song = Song.objects.get(slug=song_name_slug)
+        comments = Comment.Objects.get(slug=song_name_slug)
         context_dict['song'] = song
+        context_dict['comments'] = comments
 
     except Song.DoesNotExist:
         context_dict['song'] = None
@@ -112,14 +114,31 @@ def add_song(request):
     else:
         print(form.errors)
 
-    # Handles bad form, new form, or no form supplied cases and provides error message
     return render(request,'treble/add_song.html', {'form':form})
 
-def song_comment(request, song_name_slug):
-    return HttpResponse('comment: ' + song_name_slug)
+@login_required
+def add_song_comment(request, song_name_slug):
+    form = CommentForm(request.POST)
+    if form.is_valid():
+        form.save(commit=True)
+        # Redirect to homepage **FOR NOW**
+        return HttpResponseRedirect(reverse('index'))
+    else:
+        print(form.errors)
 
-def song_recommendation(request, song_name_slug):
-    return HttpResponse('recommendation: ' + song_name_slug)
+    return render(request,'treble/add_comment.html', {'form':form})
+
+@login_required
+def add_song_recommendation(request, song_name_slug):
+    form = RecommendationForm(request.POST)
+    if form.is_valid():
+        form.save(commit=True)
+        # Redirect to homepage **FOR NOW**
+        return HttpResponseRedirect(reverse('index'))
+    else:
+        print(form.errors)
+
+    return render(request,'treble/add_recommendation.html', {'form':form})
 
 def about(request):
     return render(request, 'treble/about.html', {})
