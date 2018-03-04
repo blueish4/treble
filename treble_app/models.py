@@ -1,4 +1,5 @@
 from django.db import models
+from datetime import datetime
 
 # Song Model
 class Song(models.Model):
@@ -9,7 +10,8 @@ class Song(models.Model):
     genre = models.CharField(max_length=128)
     album = models.CharField(max_length=128)
     no_of_recommendations = models.IntegerField(null=True)
-    # recommended_songs = models.ManyToManyField('self')
+    recommended_songs = models.ManyToManyField('self', symmetrical=False)
+
 
     def __str__(self):
         return self.track_name
@@ -33,8 +35,8 @@ class Comment(models.Model):
     username = models.CharField(max_length=20)  # To simplify population_script
     # username = models.ForeignKey(UserProfile)
     message = models.CharField(max_length=256)
-    datetime = models.CharField(max_length=256)
-    #datetime = models.DateField()
+    datetime = models.DateTimeField(default=datetime.now, blank=True)
+
 
     def __str__(self):
         return self.message
