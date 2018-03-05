@@ -2,9 +2,47 @@
 {% load staticfiles %}
 
 {% block title_block %}
-    {{ song }}
+    {{ name }} - {{ artist }}
 {% endblock %}
 
 {% block body_block %}
-    <div style="height:500px;border:1px red solid">Nice extra content</div>
+    <div class="row pad-top-1">
+        <div class="col-md-4 order-md-2">
+            <img id="cover-img" src="{{ img }}"/>
+        </div>
+        <div id="details" class="col-md-8 order-md-1">
+            <h1>{{ name }}</h1>
+            <h2>{{ artist }}</h2>
+            <iframe src="https://open.spotify.com/embed?uri={{ spotify }}"
+        frameborder="0" allow="encrypted-media" allowtransparency="true"></iframe>
+        </div>
+    </div>
+    <div id="similar-to">
+        <h3>Similar to</h3>
+
+        <ul class="link-container">
+            {% for song in similar %}
+                <li class="song-link">
+                    <a href="{{ song.url }}">
+                        <img src="{{ song.image }}"/>
+                        <div class="song-title">
+                            <p>{{ song.name }}</p>
+                        </div>
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div id="reviews">
+        <h3>Reviews</h3>
+        <div class="row">
+        {% for review in reviews %}
+            <div class="col-md-6">
+                <b>Review from {{ review.reviewer_name }}</b><br>
+                <b>Reaction:</b>{{ review.reaction }}
+                <p>{{ review.review_text }}</p>
+            </div>
+        {% endfor %}
+        </div>
+    </div>
 {% endblock %}
