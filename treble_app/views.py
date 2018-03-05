@@ -19,7 +19,41 @@ def user_account(request, username_slug):
     return HttpResponse('account: ' + username_slug)
 
 def song(request, song_name_slug):
-    return HttpResponse('song: ' + song_name_slug)
+    context_dict = {"name": song_name_slug,
+                    "artist": "Taylor Swift",
+                    "img": "https://i.scdn.co/image/abd96549fa53000a633d64cbab5a69a623b6bdfa",
+                    "spotify": "spotify:track:4vVb2D6RYL669h7tLYOKwx",
+                    "similar": [{"image": "https://i.scdn.co/image/966ade7a8c43b72faa53822b74a899c675aaafee",
+                                 "name": "This song here",
+                                 "url": "/treble/song/this-song-here/"},
+                                {"image": "https://i.scdn.co/image/966ade7a8c43b72faa53822b74a899c675aaafee",
+                                 "name": "This song here",
+                                 "url": "/treble/song/this-song-here/"},
+                                {"image": "https://i.scdn.co/image/966ade7a8c43b72faa53822b74a899c675aaafee",
+                                 "name": "This song here",
+                                 "url": "/treble/song/this-song-here/"},
+                                {"image": "https://i.scdn.co/image/966ade7a8c43b72faa53822b74a899c675aaafee",
+                                 "name": "This song here",
+                                 "url": "/treble/song/this-song-here/"},
+                                {"image": "https://i.scdn.co/image/966ade7a8c43b72faa53822b74a899c675aaafee",
+                                 "name": "This song here",
+                                 "url": "https://127.0.0.1:8000/treble/song/this-song-here/"},
+                                {"image": "https://i.scdn.co/image/966ade7a8c43b72faa53822b74a899c675aaafee",
+                                 "name": "This song here",
+                                 "url": "/treble/song/this-song-here/"}
+                                ],
+                    "reviews": [{"reviewer_name": "Alice",
+                                 "reaction": ":D",
+                                 "review_text": "This is a really great song!"},
+                                {"reviewer_name": "Alice",
+                                 "reaction": ":D",
+                                 "review_text": "This is a really great song!"},
+                                {"reviewer_name": "Bob",
+                                 "reaction": ":(",
+                                 "review_text": "I am a massive fucking killjoy."}
+                                ]
+                    }
+    return render(request, 'song.html', context=context_dict)
 
 def song_comment(request, song_name_slug):
     return HttpResponse('comment: ' + song_name_slug)
