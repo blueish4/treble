@@ -90,12 +90,12 @@ def user_account(request):
     user = request.user
     return render(request, 'treble/user_account.html', user)
 
-def song(request, song_name_slug):
+def song(request, song_id):
     context_dict = {}
 
     try:
-        song = Song.objects.get(slug=song_name_slug)
-        comments = Comment.Objects.get(slug=song_name_slug)
+        song = Song.objects.get(slug=song_id)
+        comments = Comment.Objects.get(slug=song_id)
         context_dict['song'] = song
         context_dict['comments'] = comments
 
@@ -117,7 +117,7 @@ def add_song(request):
     return render(request,'treble/add_song.html', {'form':form})
 
 @login_required
-def add_song_comment(request, song_name_slug):
+def add_song_comment(request, song_id):
     form = CommentForm(request.POST)
     if form.is_valid():
         form.save(commit=True)
@@ -129,7 +129,7 @@ def add_song_comment(request, song_name_slug):
     return render(request,'treble/add_comment.html', {'form':form})
 
 @login_required
-def add_song_recommendation(request, song_name_slug):
+def add_song_recommendation(request, song_id):
     form = RecommendationForm(request.POST)
     if form.is_valid():
         form.save(commit=True)
