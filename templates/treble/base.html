@@ -27,6 +27,16 @@
                     <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
                     <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
                 </form>
+                <div class="dropdown show" id="login-dropdown-div">
+                    <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="login-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Log in/Register
+                    </a>
+                  <div class="dropdown-menu" aria-labelledby="login-dropdown">
+                      <!-- These will be different when logged in -->
+                      <a class="dropdown-item" href="{% url 'register' %}">Register</a>
+                      <a class="dropdown-item" href="{% url 'login' %}">Log in</a>
+                  </div>
+                </div>
             </div>
             <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>

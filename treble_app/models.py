@@ -1,5 +1,7 @@
 from django.db import models
 from datetime import datetime
+from django.contrib.auth.models import User
+
 
 
 # Song Model
@@ -19,14 +21,13 @@ class Song(models.Model):
 
 # User Model
 class UserProfile(models.Model):
+    user = models.OneToOneField(User)
     # Unique Username
-    email = models.EmailField(max_length=254, unique=True)
-    username = models.CharField(max_length=20, primary_key=True)
-    password = models.CharField(max_length=20)
-    profile_picture = models.ImageField()
+    favourites = models.ManyToManyField('Song', symmetrical=False)
+    profile_picture = models.ImageField(upload_to='profile_images', blank=True)
 
     def __str__(self):
-        return self.username
+        return self.user.username
 
 
 # Comment Model

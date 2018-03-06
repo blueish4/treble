@@ -1,5 +1,5 @@
 from django import forms
-from rango.models import Song, Comment, UserProfile
+from treble_app.models import Song, Comment, UserProfile
 from django.contrib.auth.models import User
 
 class SongForm(forms.ModelForm):
@@ -9,7 +9,7 @@ class SongForm(forms.ModelForm):
     genre = forms.CharField(max_length=128)
     album = forms.CharField(max_length=128)
     no_of_recommendations = forms.IntegerField(widget=forms.HiddenInput(), initial=0)
-    recommended_songs = forms.ModelMultipleChoiceField(widget=forms.HiddenInput()) # Initially song has no recommended songs
+    recommended_songs = forms.ModelMultipleChoiceField(queryset=Song, widget=forms.HiddenInput()) # Initially song has no recommended songs
 
     class Meta:
         model = Song
@@ -24,16 +24,20 @@ class CommentForm(forms.ModelForm):
 
 class RecommendationForm(forms.Form):
     # TODO populate queryset parameter with all songs matching a search performed by the user
-    recommended_songs = forms.ModelMultipleChoiceField()
+    recommended_songs = forms.ModelMultipleChoiceField(queryset=Song)
 
 class UserForm(forms.ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput())
+    username = forms.CharField(widget=forms.TextInput(attrs={"class": "col-sm-6", "required": "required"}))
+    email = forms.EmailField(widget=forms.EmailInput(attrs={"class": "col-sm-6"}))
+    password = forms.CharField(widget=forms.PasswordInput(attrs={"class": "col-sm-6"}))
 
     class Meta:
         model = User
         fields = ('username', 'email', 'password')
 
 class UserProfileForm(forms.ModelForm):
+    favourites = forms.MultipleChoiceField(widget=forms.MultipleHiddenInput)
+
     class Meta:
         model = UserProfile
-        fields = ('favourites', 'picture')
+        fields = ('profile_picture', 'favourites')

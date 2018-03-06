@@ -2,17 +2,29 @@
 {% load staticfiles %}
 
 {% block title_block %}
-    {{ name }} - {{ artist }}
+    Register
 {% endblock %}
 
 {% block body_block %}
-<form id="user_form" method="post" action="{% url 'register' %}"
-              enctype="multipart/form-data">
-            {% csrf_token %}
-            <!-- Display each form -->
-            {{ user_form.as_p }}
-            {{ profile_form.as_p }}
-            <!-- Provide a button to click to submit the form. -->
-            <input type="submit" name="submit" value="Register" />
-        </form>
+    <h1>Register</h1>
+    <form id="user_form" method="post" action="{% url 'register' %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        <!-- Display each form -->
+        {% for field in user_form %}
+            <div class="row">
+                <label for="{{ field.id_for_label }}" class="col-3">{{ field.label }}</label>
+                {{ field }}
+            </div>
+        {% endfor %}
+        {% for field in profile_form %}
+            {% if not field.is_hidden %}
+            <div class="row">
+                <label for="{{ field.id_for_label }}" class="col-3">{{ field.label }}</label>
+                {{ field }}
+            </div>
+            {% endif %}
+        {% endfor %}
+        <!-- Provide a button to click to submit the form. -->
+        <input type="submit" name="submit" value="Register" />
+    </form>
 {% endblock %}
