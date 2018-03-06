@@ -26,7 +26,7 @@ class CommentForm(forms.ModelForm):
         exclude = ('comment_id', 'song_id', 'username', 'datetime',)
 
 
-# class RecommendationForm(forms.Form):
+class RecommendationForm(forms.Form):
     # TODO populate queryset parameter with all songs matching a search performed by the user
     recommended_songs = forms.ModelMultipleChoiceField(queryset=None, widget=forms.CheckboxSelectMultiple())
 
@@ -41,4 +41,4 @@ class UserForm(forms.ModelForm):
 class UserProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
-        fields = ('profile_picture',) # TODO implement favourites
+        fields = ('favourites','picture',)
