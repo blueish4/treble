@@ -17,7 +17,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Static URLs
 TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
-STATIC_DIR = os.path.join(BASE_DIR, 'static')
 MEDIA_DIR = os.path.join(BASE_DIR, 'media')
 
 
@@ -60,7 +59,7 @@ ROOT_URLCONF = 'treble.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -128,3 +127,7 @@ MEDIA_URL = '/media/'
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
+
+STATIC_DIR = os.path.join(BASE_DIR, "static")
+
+STATICFILES_DIRS = [STATIC_DIR, ]
