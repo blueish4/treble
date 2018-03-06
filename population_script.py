@@ -20,30 +20,40 @@ def populate():
          "artist": "Coldplay",
          "genre": "Alternative Rock",
          "album": "A Head Full Of Dreams",
+         "spotify_uri": "spotify:track:3RiPr603aXAoi4GHyXx0uy",
+         "artwork_url": "https://i.scdn.co/image/9c2c4a9ac9726bfd996ff96383178bbb5efc59ab",
          "recommended_songs": [3, 5]},
         {"song_id": 2,
          "track_name": "Hysteria",
          "artist": "Muse",
          "genre": "Alternative Rock",
          "album": "Absolution",
+         "spotify_uri": "spotify:track:7xyYsOvq5Ec3P4fr6mM9fD",
+         "artwork_url": "https://i.scdn.co/image/ae61915fc3f4b3019200ba6ee58a2a85866461bf",
          "recommended_songs": [4]},
         {"song_id": 3,
          "track_name": "Fix You",
          "artist": "Coldplay",
          "genre": "Alternative Rock",
          "album": "X & Y",
+         "spotify_uri": "spotify:track:7LVHVU3tWfcxj5aiPFEW4Q",
+         "artwork_url": "https://i.scdn.co/image/ce2cb283df41c592e72df1900558d8af97445aa6",
          "recommended_songs": [1, 5]},
         {"song_id": 4,
          "track_name": "ELEMENT.",
          "artist": "Kendrick Lamar",
          "genre": "Rap",
          "album": "DAMN.",
+         "spotify_uri": "spotify:track:6rZssCJPEdQnyeEdNLKsr8",
+         "artwork_url": "https://i.scdn.co/image/661e1a935e2eacdd45c05ef618565535e7bed2ad",
          "recommended_songs": [2]},
         {"song_id": 5,
          "track_name": "Counting Stars",
          "artist": "OneRepublic",
          "genre": "Pop Rock",
          "album": "Native",
+         "spotify_uri": "spotify:track:5edBgVtRD0fvWk140Sl21T",
+         "artwork_url": "https://i.scdn.co/image/8b6238186da6c5c9b0ff756065883aa1a8fbd339",
          "recommended_songs": [1, 3]},
     ]
 
@@ -99,7 +109,7 @@ def populate():
         # Add song from list above
         new_song = songs[i]
         s = add_song(new_song['song_id'], new_song['track_name'], new_song['artist'],
-                     new_song['genre'], new_song['album'])
+                     new_song['genre'], new_song['album'], new_song['spotify_uri'], new_song['artwork_url'])
 
     # Add all Users
     for i in range(len(users)):
@@ -141,6 +151,8 @@ def populate():
         print("--Artist: " + s.artist)
         print("--Genre: " + s.genre)
         print("--Album: " + s.album)
+        print("--Spotify URI: " + s.spotify_uri)
+        print("--Artwork URL: " + s.artwork_url)
         print("--Number of Recommendations: " +
               str(s.recommended_songs.count()))
         print("--Recommended Songs: ")
@@ -171,14 +183,16 @@ def add_user(username, email, password, favourites):
         u.favourites.add(Song.objects.get(song_id=fav))
     u.save()
     return u
-  
-  
-def add_song(song_id, track_name, artist, genre, album):
+
+
+def add_song(song_id, track_name, artist, genre, album, spotify_uri, artwork_url):
     s = Song.objects.get_or_create(song_id=song_id, track_name=track_name)[0]
     s.track_name = track_name
     s.artist = artist
     s.genre = genre
     s.album = album
+    s.spotify_uri = spotify_uri
+    s.artwork_url = artwork_url
     s.save()
     return s
 

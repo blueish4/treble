@@ -12,6 +12,8 @@ class Song(models.Model):
     artist = models.CharField(max_length=128)
     genre = models.CharField(max_length=128)
     album = models.CharField(max_length=128)
+    spotify_uri = models.CharField(max_length=256)
+    artwork_url = models.CharField(max_length=256)
     no_of_recommendations = models.IntegerField(null=True)
     recommended_songs = models.ManyToManyField('self', symmetrical=False)
 
