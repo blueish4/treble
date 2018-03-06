@@ -131,6 +131,7 @@ def populate():
         for recommend in song['recommended_songs']:
             add_recommendation(song['song_id'], recommend)
 
+
     # Print out Users that have been added
     print("Users added... \n")
     for u in UserProfile.objects.all():

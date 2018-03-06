@@ -10,7 +10,8 @@ class SongForm(forms.ModelForm):
     genre = forms.CharField(max_length=128)
     album = forms.CharField(max_length=128)
     no_of_recommendations = forms.IntegerField(widget=forms.HiddenInput(), initial=0)
-    recommended_songs = forms.ModelMultipleChoiceField(queryset=None, widget=forms.CheckboxSelectMultiple())
+    # TODO Verify that this is actually correct, was previously a merge conflict
+    recommended_songs = forms.ModelMultipleChoiceField(queryset=Song, widget=forms.CheckboxSelectMultiple())
 
     class Meta:
         model = Song
@@ -28,10 +29,13 @@ class CommentForm(forms.ModelForm):
 
 class RecommendationForm(forms.Form):
     # TODO populate queryset parameter with all songs matching a search performed by the user
-    recommended_songs = forms.ModelMultipleChoiceField(queryset=None, widget=forms.CheckboxSelectMultiple())
+    # TODO Verify that this is actually correct, was previously a merge conflict
+    recommended_songs = forms.ModelMultipleChoiceField(queryset=Song, widget=forms.CheckboxSelectMultiple())
 
 class UserForm(forms.ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput())
+    username = forms.CharField(widget=forms.TextInput(attrs={"class": "col-sm-6", "required": "required"}))
+    email = forms.EmailField(widget=forms.EmailInput(attrs={"class": "col-sm-6"}))
+    password = forms.CharField(widget=forms.PasswordInput(attrs={"class": "col-sm-6"}))
 
     class Meta:
         model = User
@@ -39,6 +43,8 @@ class UserForm(forms.ModelForm):
 
 
 class UserProfileForm(forms.ModelForm):
+    favourites = forms.MultipleChoiceField(widget=forms.MultipleHiddenInput)
+
     class Meta:
         model = UserProfile
-        fields = ('favourites','picture',)
+        fields = ('picture', 'favourites')

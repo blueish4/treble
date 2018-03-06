@@ -3,9 +3,8 @@ from datetime import datetime
 from django.template.defaultfilters import slugify
 from django.contrib.auth.models import User
 
+
 # Song Model
-
-
 class Song(models.Model):
     # Unique ID, and has a many-to-many relationship with itself
     song_id = models.IntegerField(primary_key=True)
@@ -20,6 +19,7 @@ class Song(models.Model):
 
     def __str__(self):
         return self.track_name
+
 
 # User Model
 
