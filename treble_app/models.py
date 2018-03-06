@@ -1,7 +1,11 @@
 from django.db import models
 from datetime import datetime
+from django.template.defaultfilters import slugify
+from django.contrib.auth.models import User
 
 # Song Model
+
+
 class Song(models.Model):
     # Unique ID, and has a many-to-many relationship with itself
     song_id = models.IntegerField(primary_key=True)
@@ -12,31 +16,35 @@ class Song(models.Model):
     no_of_recommendations = models.IntegerField(null=True)
     recommended_songs = models.ManyToManyField('self', symmetrical=False)
 
-
     def __str__(self):
         return self.track_name
 
 # User Model
+
+
 class UserProfile(models.Model):
-    # Unique Username
-    email = models.EmailField(max_length=254, unique=True)
-    username = models.CharField(max_length=20, primary_key=True)
-    password = models.CharField(max_length=20)
-    profile_picture = models.ImageField()
+    user = models.OneToOneField(User)
+
+    username_slug = models.SlugField(unique=True)
+    favourites = models.ManyToManyField(Song, symmetrical=False)
+    picture = models.ImageField(upload_to='profile_images', blank=True)
+
+    def save(self, *args, **kwargs):
+        self.username_slug = slugify(self.user.username)
+        super(UserProfile, self).save(*args, **kwargs)
 
     def __str__(self):
-        return self.username
+        return self.user.username
+
 
 # Comment Model
 class Comment(models.Model):
     # Unique Comment ID, and has foreign keys Song ID and Username
     comment_id = models.IntegerField(primary_key=True)
     song_id = models.ForeignKey(Song)
-    username = models.CharField(max_length=20)  # To simplify population_script
-    # username = models.ForeignKey(UserProfile)
+    username = models.ForeignKey(UserProfile, default=1)
     message = models.CharField(max_length=256)
     datetime = models.DateTimeField(default=datetime.now, blank=True)
-
 
     def __str__(self):
         return self.message
