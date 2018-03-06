@@ -2,11 +2,10 @@ from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-# No need to import HttpResponse once all views return render()
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from treble_app.forms import UserForm, UserProfileForm, SongForm, CommentForm, RecommendationForm
-from treble_app.models import Song
+from treble_app.models import Song, Comment
 
 
 def index(request):
@@ -34,8 +33,7 @@ def user_login(request):
                 return HttpResponseRedirect(reverse('index'))
             else:
                 message = "Your Treble account is disabled."
-                return render(request, 'treble/login.html', {'message':message})
-
+                return render(request, 'treble/login.html', {'message': message})
         else:
             print("Invalid login details: {0}, {1}",
                   format(username, password))
@@ -102,10 +100,25 @@ def user_account(request):
 
 def song(request, song_id):
     context_dict = {}
+    # MICHAEL: This is the structure of the context dictionary I've written the template for.
+    #          Ellipses indicate that the previous dictionary's structure is repeated
+    # context_dict = {"name": song_name_slug,
+    #                "artist": "Taylor Swift",
+    #                "img": "https://i.scdn.co/image/abd96549fa53000a633d64cbab5a69a623b6bdfa",
+    #                "spotify": "spotify:track:4vVb2D6RYL669h7tLYOKwx",
+    #                "similar": [{"image": "https://i.scdn.co/image/966ade7a8c43b72faa53822b74a899c675aaafee",
+    #                             "name": "This song here",
+    #                             "url": "/treble/song/this-song-here/"},...
+    #                            ],
+    #                "reviews": [{"reviewer_name": "Alice",
+    #                             "reaction": ":D",
+    #                             "review_text": "This is a really great song!"},...
+    #                            ]
+    #                
     try:
-        song = Song.objects.get(slug=song_id)
-        comments = Comment.Objects.get(slug=song_id)
-        context_dict['song'] = song
+        song_obj = Song.objects.get(slug=song_id)
+        comments = Comment.objects.get(slug=song_id)
+        context_dict['song'] = song_obj
         context_dict['comments'] = comments
     except Song.DoesNotExist:
         context_dict['song'] = None
@@ -135,10 +148,8 @@ def add_song_comment(request, song_id):
         return HttpResponseRedirect(reverse('index'))
     else:
         print(form.errors)
-
-    return render(request,'treble/add_comment.html', {'form':form})
-
-
+    return render(request, 'treble/add_comment.html', {'form': form})
+  
 
 @login_required
 def add_song_recommendation(request, song_id):
