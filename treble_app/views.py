@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseRedirect # No need to import HttpResponse once all views return render()
 from django.core.urlresolvers import reverse
-from treble.forms import UserForm, UserProfileForm, SongForm, CommentForm, RecommendationForm
+from treble_app.forms import UserForm, UserProfileForm, SongForm, CommentForm, RecommendationForm
 from treble_app.models import Song
 
 def index(request):
@@ -30,7 +30,7 @@ def user_login(request):
                 return HttpResponseRedirect(reverse('index'))
             else:
                 message = "Your Treble account is disabled."
-                return render(request, 'treble/login.html' {'message':message})
+                return render(request, 'treble/login.html', {'message':message})
         else:
             print("Invalid login details: {0}, {1}", format(username, password))
             message = "Invalid login details supplied."
@@ -159,7 +159,7 @@ def add_song_comment(request, song_id):
         print(form.errors)
 
     return render(request,'treble/add_comment.html', {'form':form})
-  
+
 
 @login_required
 def add_song_recommendation(request, song_id):
