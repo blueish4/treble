@@ -9,20 +9,31 @@ class SongForm(forms.ModelForm):
     genre = forms.CharField(max_length=128)
     album = forms.CharField(max_length=128)
     no_of_recommendations = forms.IntegerField(widget=forms.HiddenInput(), initial=0)
-    recommended_songs = forms.ModelMultipleChoiceField(queryset=None)
+    recommended_songs = forms.ModelMultipleChoiceField(widget=forms.HiddenInput()) # Initially song has no recommended songs
 
     class Meta:
-        model = Category
+        model = Song
         fields = ('track_name',)
 
 class CommentForm(forms.ModelForm):
-    pass
+    message = forms.CharField(max_length=250, help_text="Please give a review.")
 
-class RecommendationForm():
-    pass
+    class Meta:
+        model = Comment
+        exclude = ('comment_id', 'song_id', 'comment_id', 'username', 'datetime',)
 
-class UserForm():
-    pass
+class RecommendationForm(forms.Form):
+    # TODO populate queryset parameter with all songs matching a search performed by the user
+    recommended_songs = forms.ModelMultipleChoiceField()
 
-class UserProfileForm():
-    pass
+class UserForm(forms.ModelForm):
+    password = forms.CharField(widget=forms.PasswordInput())
+
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'password')
+
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ('favourites', 'picture')
