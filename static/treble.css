@@ -1,0 +1,43 @@
+.site-footer {
+    background-color: #dddddd;
+    border-top: 4px #cdcdcd solid;
+    min-height: 10rem;
+}
+
+.pad-top-1 {
+    padding-top: 1rem;
+}
+
+.link-container {
+    overflow-x: scroll;
+    overflow-y:hidden;
+    white-space: nowrap;
+    width: 100%;
+}
+
+.song-link {
+    margin-right: 4rem;
+    width: 14rem;
+    display: inline-block;
+}
+
+.song-link img {
+    width: 14rem;
+}
+
+.song-link  div p {
+    margin:0;
+    color: white;
+}
+
+.song-link div {
+    position: relative;
+    bottom: 1.4rem;
+    text-align: center;
+    width: auto;
+    background: rgba(0.3,0.3,0.3,0.85);
+}
+
+#cover-img {
+    width: inherit;
+}
