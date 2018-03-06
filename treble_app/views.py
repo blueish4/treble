@@ -9,7 +9,8 @@ from treble_app.models import Song, Comment
 
 
 def index(request):
-    most_recommended_songs = Song.objects.order_by('-recommendations')[:5]
+    most_recommended_songs = Song.objects.order_by(
+        '-no_of_recommendations')[:5]
     context_dict = {'most_recommended_songs', most_recommended_songs}
 
     return render(request, 'treble/index.html', context_dict)
@@ -34,7 +35,8 @@ def user_login(request):
                 message = "Your Treble account is disabled."
                 return render(request, 'treble/login.html', {'message': message})
         else:
-            print("Invalid login details: {0}, {1}", format(username, password))
+            print("Invalid login details: {0}, {1}",
+                  format(username, password))
             message = "Invalid login details supplied."
             return render(request, 'treble/login.html', {'message': message})
     else:
@@ -86,7 +88,7 @@ def register(request):
 
 @login_required  # Can only view other profiles if user is logged in
 def user_profile(request, username_slug):
-    user = User.objects.get(username=username_slug)
+    user = UserProfile.objects.get(username=username_slug)
     return render(request, 'treble/user_profile.html', user)
 
 
@@ -112,7 +114,7 @@ def song(request, song_id):
     #                             "reaction": ":D",
     #                             "review_text": "This is a really great song!"},...
     #                            ]
-    #                }
+    #                
     try:
         song_obj = Song.objects.get(slug=song_id)
         comments = Comment.objects.get(slug=song_id)
@@ -146,7 +148,6 @@ def add_song_comment(request, song_id):
         return HttpResponseRedirect(reverse('index'))
     else:
         print(form.errors)
-
     return render(request, 'treble/add_comment.html', {'form': form})
   
 

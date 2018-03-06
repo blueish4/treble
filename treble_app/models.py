@@ -1,7 +1,7 @@
 from django.db import models
 from datetime import datetime
+from django.template.defaultfilters import slugify
 from django.contrib.auth.models import User
-
 
 
 # Song Model
@@ -20,11 +20,18 @@ class Song(models.Model):
 
 
 # User Model
+
+
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
-    # Unique Username
-    favourites = models.ManyToManyField('Song', symmetrical=False)
-    profile_picture = models.ImageField(upload_to='profile_images', blank=True)
+
+    username_slug = models.SlugField(unique=True)
+    favourites = models.ManyToManyField(Song, symmetrical=False)
+    picture = models.ImageField(upload_to='profile_images', blank=True)
+
+    def save(self, *args, **kwargs):
+        self.username_slug = slugify(self.user.username)
+        super(UserProfile, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.user.username
@@ -35,8 +42,7 @@ class Comment(models.Model):
     # Unique Comment ID, and has foreign keys Song ID and Username
     comment_id = models.IntegerField(primary_key=True)
     song_id = models.ForeignKey(Song)
-    username = models.CharField(max_length=20)  # To simplify population_script
-    # username = models.ForeignKey(UserProfile)
+    username = models.ForeignKey(UserProfile, default=1)
     message = models.CharField(max_length=256)
     datetime = models.DateTimeField(default=datetime.now, blank=True)
 
