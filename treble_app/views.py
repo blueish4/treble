@@ -9,9 +9,8 @@ from treble_app.models import Song, Comment
 
 
 def index(request):
-    most_recommended_songs = Song.objects.order_by(
-        '-no_of_recommendations')[:5]
-    context_dict = {'most_recommended_songs', most_recommended_songs}
+    most_recommended_songs = Song.objects.order_by('-no_of_recommendations')[:5]
+    context_dict = {'most_recommended_songs': most_recommended_songs}
 
     return render(request, 'treble/index.html', context_dict)
 
