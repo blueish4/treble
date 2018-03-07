@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from treble_app.forms import UserForm, UserProfileForm, SongForm, CommentForm, RecommendationForm
-from treble_app.models import Song, Comment
+from treble_app.models import Song, Comment, UserProfile
 
 
 def index(request):
@@ -16,11 +16,13 @@ def index(request):
 
 
 def user_login(request):
-    if request.method == 'POST':
+    if request.user.is_authenticated():
+        return HttpResponseRedirect(reverse('index'))
+
+    if request.method == 'POST' and not request.user.is_authenticated():
         # Get username and password (returns None if unsuccessful)
         username = request.POST.get('username')
         password = request.POST.get('password')
-
         # User object returned if auth. is successful
         user = authenticate(username=username, password=password)
 
@@ -34,8 +36,7 @@ def user_login(request):
                 message = "Your Treble account is disabled."
                 return render(request, 'treble/login.html', {'message': message})
         else:
-            print("Invalid login details: {0}, {1}",
-                  format(username, password))
+            print("Invalid login details: "+username+" , "+password)
             message = "Invalid login details supplied."
             return render(request, 'treble/login.html', {'message': message})
     else:
@@ -46,8 +47,10 @@ def user_login(request):
 def register(request):
     # True if registration was successful
     registered = False
+    if request.user.is_authenticated():
+        return HttpResponseRedirect(reverse('index'))
 
-    if request.method == 'POST':
+    if request.method == 'POST' and not request.user.is_authenticated():
         user_form = UserForm(data=request.POST)
         profile_form = UserProfileForm(data=request.POST)
 
@@ -99,25 +102,11 @@ def user_account(request):
 
 def song(request, song_id):
     context_dict = {}
-    # MICHAEL: This is the structure of the context dictionary I've written the template for.
-    #          Ellipses indicate that the previous dictionary's structure is repeated
-    # context_dict = {"name": song_name_slug,
-    #                "artist": "Taylor Swift",
-    #                "img": "https://i.scdn.co/image/abd96549fa53000a633d64cbab5a69a623b6bdfa",
-    #                "spotify": "spotify:track:4vVb2D6RYL669h7tLYOKwx",
-    #                "similar": [{"image": "https://i.scdn.co/image/966ade7a8c43b72faa53822b74a899c675aaafee",
-    #                             "name": "This song here",
-    #                             "url": "/treble/song/this-song-here/"},...
-    #                            ],
-    #                "reviews": [{"reviewer_name": "Alice",
-    #                             "reaction": ":D",
-    #                             "review_text": "This is a really great song!"},...
-    #                            ]
-    #
     try:
         song_obj = Song.objects.get(song_id=song_id)
-        comments = Comment.objects.get(song_id=song_id)
+        comments = Comment.objects.filter(song_id=song_id)
         context_dict['song'] = song_obj
+        context_dict['recommended'] = song_obj.recommended_songs.all()
         context_dict['comments'] = comments
     except Song.DoesNotExist:
         context_dict['song'] = None
