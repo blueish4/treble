@@ -122,15 +122,19 @@ def populate():
         # Comments must be added after both Songs and Users
         new_comment = comments[j]
         song = Song.objects.get(song_id=new_comment['song_id'])
-        add_comment(song, new_comment['comment_id'],
-                    new_comment['username'], new_comment['message'])
+        c = add_comment(song, new_comment['comment_id'],
+                        new_comment['username'], new_comment['message'])
+
+        song.comments.add(c)
+        user = UserProfile.objects.get(
+            username_slug=slugify(new_comment['username']))
+        user.comments.add(c)
 
     # Add recommended songs after all songs have been added
     for i in range(len(songs)):
         song = songs[i]
         for recommend in song['recommended_songs']:
             add_recommendation(song['song_id'], recommend)
-
 
     # Print out Users that have been added
     print("Users added... \n")
@@ -141,6 +145,9 @@ def populate():
         print("     --Favourites: ")
         for s in u.favourites.all():
             print("         - " + str(s))
+        print("     --Comments: ")
+        for c in u.comments.all():
+            print("         -" + str(c))
         print("")
 
     # Print out Songs that have been added
@@ -157,8 +164,10 @@ def populate():
               str(s.recommended_songs.count()))
         print("--Recommended Songs: ")
         for song in s.recommended_songs.all():
-
             print("        -" + str(song))
+        print("--Comments: ")
+        for comment in s.comments.all():
+            print("        -" + str(comment))
         print("")
 
     # Print out Comments that have been added, to which song, and by whom
