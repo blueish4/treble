@@ -7,16 +7,16 @@
 
 {% block body_block %}
     <h1>Log In</h1>
-    <form id="user_form" method="post" action="{% url 'register' %}" enctype="multipart/form-data">
+    <form id="user_form" method="post" action="{% url 'login' %}" enctype="multipart/form-data">
         {% csrf_token %}
         <!-- Display each form -->
         <div class="row">
             <label for="username" class="col-sm-3">Username</label>
-            <input id="username" class="col-sm-9" type="text">
+            <input id="username" name="username" class="col-sm-9" type="text">
         </div>
         <div class="row">
             <label for="password" class="col-sm-3">Password</label>
-            <input id="password" class="col-sm-9" type="password">
+            <input id="password" name="password" class="col-sm-9" type="password">
         </div>
         <!-- Provide a button to click to submit the form. -->
         <input type="submit" name="submit" value="Log in" />

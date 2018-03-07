@@ -9,9 +9,8 @@ from treble_app.models import Song, Comment, UserProfile
 
 
 def index(request):
-    most_recommended_songs = Song.objects.order_by(
-        '-no_of_recommendations')[:5]
-    context_dict = {'most_recommended_songs', most_recommended_songs}
+    most_recommended_songs = Song.objects.order_by('-no_of_recommendations')[:5]
+    context_dict = {'most_recommended_songs': most_recommended_songs}
 
     return render(request, 'treble/index.html', context_dict)
 
@@ -21,7 +20,7 @@ def user_login(request):
         # Get username and password (returns None if unsuccessful)
         username = request.POST.get('username')
         password = request.POST.get('password')
-
+        print(request.POST)
         # User object returned if auth. is successful
         user = authenticate(username=username, password=password)
 
@@ -35,8 +34,7 @@ def user_login(request):
                 message = "Your Treble account is disabled."
                 return render(request, 'treble/login.html', {'message': message})
         else:
-            print("Invalid login details: {0}, {1}",
-                  format(username, password))
+            print("Invalid login details: "+username+" , "+password)
             message = "Invalid login details supplied."
             return render(request, 'treble/login.html', {'message': message})
     else:
