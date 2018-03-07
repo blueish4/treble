@@ -16,11 +16,13 @@ def index(request):
 
 
 def user_login(request):
-    if request.method == 'POST':
+    if request.user.is_authenticated():
+        return HttpResponseRedirect(reverse('index'))
+
+    if request.method == 'POST' and not request.user.is_authenticated():
         # Get username and password (returns None if unsuccessful)
         username = request.POST.get('username')
         password = request.POST.get('password')
-        print(request.POST)
         # User object returned if auth. is successful
         user = authenticate(username=username, password=password)
 
@@ -45,8 +47,10 @@ def user_login(request):
 def register(request):
     # True if registration was successful
     registered = False
+    if request.user.is_authenticated():
+        return HttpResponseRedirect(reverse('index'))
 
-    if request.method == 'POST':
+    if request.method == 'POST' and not request.user.is_authenticated():
         user_form = UserForm(data=request.POST)
         profile_form = UserProfileForm(data=request.POST)
 
