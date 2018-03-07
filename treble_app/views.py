@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -101,7 +102,9 @@ def user_account(request):
 
 
 def song(request, song_id):
-    context_dict = {}
+    if int(song_id) < 1:
+        return HttpResponseRedirect(reverse('index'))
+    context_dict = {'form': CommentForm(request.POST, user=request.user, song_id=song_id)}
     try:
         song_obj = Song.objects.get(song_id=song_id)
         comments = Comment.objects.filter(song_id=song_id)
@@ -110,7 +113,6 @@ def song(request, song_id):
         context_dict['comments'] = comments
     except Song.DoesNotExist:
         context_dict['song'] = None
-
     return render(request, 'treble/song.html', context_dict)
 
 
@@ -128,15 +130,16 @@ def add_song(request):
 
 
 @login_required
-def add_song_comment(request, song_id):
-    form = CommentForm(request.POST)
+def add_song_comment(request, song_id):  # This needs to be the POST endpoint for the add operation
+    form = CommentForm(request.POST, user=request.user, song_id=song_id)
     if form.is_valid():
+        form.cleaned_data["username"] = UserProfile.objects.get(user_id=request.user.id)
+        form.cleaned_data["song_id"] = Song.objects.get(song_id=song_id)
         form.save(commit=True)
-        # Redirect to homepage **FOR NOW**
-        return HttpResponseRedirect(reverse('index'))
     else:
         print(form.errors)
-    return render(request, 'treble/add_comment.html', {'form': form})
+    return HttpResponseRedirect(reverse('song', kwargs={"song_id": song_id,
+                                                        "comment_errors": form.errors}))
 
 
 @login_required
