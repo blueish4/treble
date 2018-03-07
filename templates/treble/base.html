@@ -23,18 +23,27 @@
                     <li class="nav-link">About us</li>
                     <li class="nav-link">FAQ</li>
                 </ul>
-                <form class="form-inline mt-2 mt-md-0">
+                <form class="form-inline mt-2 mt-md-0 nav-link">
                     <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
                     <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
                 </form>
-                <div class="dropdown show" id="login-dropdown-div">
+                <div class="dropdown show nav-link">
                     <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="login-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Log in/Register
+                        {% if user.is_authenticated %}
+                            {{ user.username }}
+                        {% else %}
+                            Log in/Register
+                        {% endif %}
                     </a>
                   <div class="dropdown-menu" aria-labelledby="login-dropdown">
                       <!-- These will be different when logged in -->
+                      {% if user.is_authenticated %}
+                      <a class="dropdown-item" href="{% url 'user_profile' user.username %}">My profile</a>
+                      <a class="dropdown-item" href="{% url 'logout' %}">Log out</a>
+                      {% else %}
                       <a class="dropdown-item" href="{% url 'register' %}">Register</a>
                       <a class="dropdown-item" href="{% url 'login' %}">Log in</a>
+                      {% endif %}
                   </div>
                 </div>
             </div>
