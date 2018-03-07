@@ -43,8 +43,7 @@ class UserForm(forms.ModelForm):
 
 
 class UserProfileForm(forms.ModelForm):
-    favourites = forms.MultipleChoiceField(widget=forms.MultipleHiddenInput)
 
     class Meta:
         model = UserProfile
-        fields = ('picture', 'favourites')
+        fields = ('picture',)

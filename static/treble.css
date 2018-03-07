@@ -4,13 +4,6 @@
     min-height: 10rem;
 }
 
-@media (min-width: 768px) {
-#login-dropdown-div {
-    padding-left: 2rem;
-}
-    
-}
-
 .pad-top-1 {
     padding-top: 1rem;
 }
