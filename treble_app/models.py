@@ -47,7 +47,7 @@ class UserProfile(models.Model):
 class Comment(models.Model):
     # Unique Comment ID, and has foreign keys Song ID and Username
     comment_id = models.IntegerField(primary_key=True)
-    song_id = models.ForeignKey(Song)
+    song_id = models.ForeignKey('Song', default=0)
     username = models.ForeignKey(UserProfile, default=1)
     message = models.CharField(max_length=256)
     datetime = models.DateTimeField(default=datetime.now, blank=True)
