@@ -34,6 +34,31 @@
     </div>
     <div id="reviews">
         <h3>Reviews</h3>
+        <div class="row" id="comment-row">
+            {% if user.is_authenticated %}
+                {% if comment_errors %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ comment_errors }}
+                    </div>
+                {% endif %}
+                <form action="{% url 'song_comment' song.song_id %}" method="post" id="comment-form">
+                    {% csrf_token %}
+                    {% for field in form %}
+                        {% if field.name == "message" %}
+                        <div class="row">
+                            <label for="{{ field.id_for_label }}" class="col-3">Comment</label>
+                            {{ field }}
+                        </div>
+                        {% else %}
+                            {{ field }}
+                        {% endif %}
+                    {% endfor %}
+                    <input type="submit" name="submit" value="Comment"/>
+                </form>
+            {% else %}
+                <p>You need to be logged in to add a comment</p>
+            {% endif %}
+        </div>
         <div class="row">
         {% if comments.count > 0 %}
             {% for review in comments %}
