@@ -41,3 +41,11 @@
 #cover-img {
     width: inherit;
 }
+
+#comment-row {
+    margin: 0;
+}
+
+#id_song_id,#id_username {
+    display:none;
+}

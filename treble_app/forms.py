@@ -20,11 +20,20 @@ class SongForm(forms.ModelForm):
 
 class CommentForm(forms.ModelForm):
     message = forms.CharField(
-        max_length=250, help_text="Please give a review.")
+        max_length=250, help_text="Please give a review.", widget=forms.Textarea(attrs={"class": "col-sm-6", "rows": 3}))
 
     class Meta:
         model = Comment
-        exclude = ('comment_id', 'song_id', 'username', 'datetime',)
+        exclude = ('comment_id', 'datetime',)
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', '')
+        song_id = kwargs.pop('song_id', '')
+        super(CommentForm, self).__init__(*args, **kwargs)
+        self.fields['username'] = forms.ModelChoiceField(
+            queryset=UserProfile.objects.filter(user_id=user), initial=UserProfile.objects.get(user_id=user))
+        self.fields['song_id'] = forms.ModelChoiceField(
+            queryset=Song.objects.filter(song_id=song_id), initial=Song.objects.get(song_id=song_id))
 
 
 class RecommendationForm(forms.Form):
