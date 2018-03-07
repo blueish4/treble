@@ -2,30 +2,31 @@
 {% load staticfiles %}
 
 {% block title_block %}
-    {{ song.track_name }} - {{ song.artist }}
+    {{ name }} - {{ artist }}
 {% endblock %}
 
 {% block body_block %}
     <div class="row pad-top-1">
         <div class="col-md-4 order-md-2">
-            <img id="cover-img" src="{{ song.artwork_url }}"/>
+            <img id="cover-img" src="{{ img }}"/>
         </div>
         <div id="details" class="col-md-8 order-md-1">
-            <h1>{{ song.track_name }}</h1>
-            <h2>{{ song.artist }}</h2>
-            <iframe src="https://open.spotify.com/embed?uri={{ song.spotify_uri }}"
+            <h1>{{ name }}</h1>
+            <h2>{{ artist }}</h2>
+            <iframe src="https://open.spotify.com/embed?uri={{ spotify }}"
         frameborder="0" allow="encrypted-media" allowtransparency="true"></iframe>
         </div>
     </div>
     <div id="similar-to">
         <h3>Similar to</h3>
+
         <ul class="link-container">
-            {% for song in recommended %}
+            {% for song in similar %}
                 <li class="song-link">
-                    <a href="{% url 'song' song.song_id %}">
-                        <img src="{{ song.artwork_url }}"/>
+                    <a href="{{ song.url }}">
+                        <img src="{{ song.image }}"/>
                         <div class="song-title">
-                            <p>{{ song.track_name }}</p>
+                            <p>{{ song.name }}</p>
                         </div>
                     </a>
                 </li>
@@ -35,18 +36,13 @@
     <div id="reviews">
         <h3>Reviews</h3>
         <div class="row">
-        {% if comments.count > 0 %}
-            {% for review in comments %}
-                <div class="col-md-6">
-                    <b>Review from {{ review.username }}</b><br>
-                    <b>Reaction:</b>{{ review.reaction }}
-                    <p>{{ review.message }}</p>
-                </div>
-            {% endfor %}
-        {% else %}
-            <p>There are no reviews for this track. Why not add one?</p>
-        {% endif %}
-
+        {% for review in reviews %}
+            <div class="col-md-6">
+                <b>Review from {{ review.reviewer_name }}</b><br>
+                <b>Reaction:</b>{{ review.reaction }}
+                <p>{{ review.review_text }}</p>
+            </div>
+        {% endfor %}
         </div>
     </div>
 {% endblock %}
