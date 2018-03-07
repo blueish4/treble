@@ -114,10 +114,10 @@ def song(request, song_id):
     #                             "reaction": ":D",
     #                             "review_text": "This is a really great song!"},...
     #                            ]
-    #                
+    #
     try:
-        song_obj = Song.objects.get(slug=song_id)
-        comments = Comment.objects.get(slug=song_id)
+        song_obj = Song.objects.get(song_id=song_id)
+        comments = Comment.objects.get(song_id=song_id)
         context_dict['song'] = song_obj
         context_dict['comments'] = comments
     except Song.DoesNotExist:
@@ -149,7 +149,7 @@ def add_song_comment(request, song_id):
     else:
         print(form.errors)
     return render(request, 'treble/add_comment.html', {'form': form})
-  
+
 
 @login_required
 def add_song_recommendation(request, song_id):
