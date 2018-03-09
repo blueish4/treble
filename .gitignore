@@ -139,3 +139,5 @@ venv.bak/
 out
 gen
 */migrations/
+
+token.json
