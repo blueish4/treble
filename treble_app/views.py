@@ -104,7 +104,10 @@ def user_account(request):
 def song(request, song_id):
     if int(song_id) < 1:
         return HttpResponseRedirect(reverse('index'))
-    context_dict = {'form': CommentForm(request.POST, user=request.user, song_id=song_id)}
+    context_dict = {}
+    if request.user.is_authenticated():
+        context_dict['form'] = CommentForm(request.POST, user=request.user, song_id=song_id)
+
     try:
         song_obj = Song.objects.get(song_id=song_id)
         comments = Comment.objects.filter(song_id=song_id)
@@ -131,6 +134,11 @@ def add_song(request):
 
 @login_required
 def add_song_comment(request, song_id):  # This needs to be the POST endpoint for the add operation
+    # If the user isn't logged in, deny request
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('song', kwargs={"song_id": song_id,
+                                                    "comment_errors": "403: FORBIDDEN"})
+
     form = CommentForm(request.POST, user=request.user, song_id=song_id)
     if form.is_valid():
         form.cleaned_data["username"] = UserProfile.objects.get(user_id=request.user.id)
