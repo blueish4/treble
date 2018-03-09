@@ -24,8 +24,6 @@ class Song(models.Model):
 
 
 # User Model
-
-
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
 
