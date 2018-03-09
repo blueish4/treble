@@ -97,8 +97,8 @@ def user_profile(request, username_slug):
 
 @login_required
 def user_account(request):
-    user = request.user
-    return render(request, 'treble/user_account.html', {'user':user})
+    user = UserProfile.objects.get(user_id=request.user.id)
+    return HttpResponseRedirect(reverse('user_profile',kwargs={"username_slug":user.username_slug}))
 
 
 def song(request, song_id):
