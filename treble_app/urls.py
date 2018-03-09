@@ -1,4 +1,4 @@
-from django.conf.urls import url
+from django.conf.urls import url, include
 from treble_app import views
 
 urlpatterns = [
@@ -15,4 +15,5 @@ urlpatterns = [
     url(r'^contact-us/$', views.contact, name='contact'),
     url(r'^faq/$', views.faq, name='faq'),
     url(r'^logout/$', views.user_logout, name='logout'),
+	url(r'^accounts/', include('registration.backends.simple.urls')),
 ]
