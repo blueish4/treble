@@ -1,5 +1,13 @@
 from django.conf.urls import url, include
 from treble_app import views
+from registration.backends.simple.views import RegistrationView
+
+# Create a new class that redirects the user to the index page 
+#if successful at logging 
+
+class MyRegistrationView(RegistrationView):
+	def get_success_url(self,user):
+		return '/treble/'
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),
@@ -16,4 +24,7 @@ urlpatterns = [
     url(r'^faq/$', views.faq, name='faq'),
     url(r'^logout/$', views.user_logout, name='logout'),
 	url(r'^accounts/', include('registration.backends.simple.urls')),
+	url(r'^accounts/register/$',
+		MyRegistrationView.as_view(),
+			name='registration_register'),
 ]
