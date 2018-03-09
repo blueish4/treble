@@ -136,8 +136,7 @@ def add_song(request):
 def add_song_comment(request, song_id):  # This needs to be the POST endpoint for the add operation
     # If the user isn't logged in, deny request
     if not request.user.is_authenticated():
-        return HttpResponseRedirect('song', kwargs={"song_id": song_id,
-                                                    "comment_errors": "403: FORBIDDEN"})
+        return HttpResponseRedirect(reverse('song', kwargs={"song_id": song_id}))
 
     form = CommentForm(request.POST, user=request.user, song_id=song_id)
     if form.is_valid():
@@ -146,8 +145,7 @@ def add_song_comment(request, song_id):  # This needs to be the POST endpoint fo
         form.save(commit=True)
     else:
         print(form.errors)
-    return HttpResponseRedirect(reverse('song', kwargs={"song_id": song_id,
-                                                        "comment_errors": form.errors}))
+    return HttpResponseRedirect(reverse('song', kwargs={"song_id": song_id}))
 
 
 @login_required
