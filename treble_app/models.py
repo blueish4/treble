@@ -50,5 +50,15 @@ class Comment(models.Model):
     message = models.CharField(max_length=256)
     datetime = models.DateTimeField(default=datetime.now, blank=True)
 
+    # Reactions are between 0 and 5 where:
+    #           0:     Smile Emoji (Default) 
+    #           1:     Love Emoji
+    #           2:     Surprised Emoji
+    #           3:     Relieved/Relaxed Emoji
+    #           4:     Perfect Emoji
+    #           5:     Dissapointed Emoji
+    reaction = models.IntegerField(default=0)
+
+
     def __str__(self):
         return self.message
