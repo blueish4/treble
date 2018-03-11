@@ -132,7 +132,7 @@ def add_song(request):
 
 
 @login_required
-def add_song_comment(request, song_id):  # This needs to be the POST endpoint for the add operation
+def add_song_comment(request, song_id):
     # If the user isn't logged in, deny request
     if not request.user.is_authenticated():
         return HttpResponseRedirect(reverse('song', kwargs={"song_id": song_id}))
@@ -146,6 +146,8 @@ def add_song_comment(request, song_id):  # This needs to be the POST endpoint fo
     if form.is_valid():
         form.save(commit=True)
     else:
+        # TODO display errors somehow.
+        # This might become easier if the form becomes an AJAX one, since it can be is the response body
         print(form.errors)
     return HttpResponseRedirect(reverse('song', kwargs={"song_id": song_id}))
 
