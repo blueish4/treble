@@ -1,5 +1,6 @@
 from django.db import models
-from datetime import datetime
+from django.utils import timezone
+import pytz
 from django.template.defaultfilters import slugify
 from django.contrib.auth.models import User
 
@@ -48,7 +49,7 @@ class Comment(models.Model):
     song_id = models.ForeignKey('Song', default=0)
     username = models.ForeignKey(UserProfile, default=1)
     message = models.CharField(max_length=256)
-    datetime = models.DateTimeField(default=datetime.now, blank=True)
+    datetime = models.DateTimeField(default=timezone.now, blank=True)
 
     # Reactions are between 0 and 5 where:
     #           0:     Smile Emoji (Default) 
@@ -57,7 +58,13 @@ class Comment(models.Model):
     #           3:     Relieved/Relaxed Emoji
     #           4:     Perfect Emoji
     #           5:     Dissapointed Emoji
-    reaction = models.IntegerField(default=0)
+    CHOICES = ((0, '☺️'),
+               (1, '❤️'),
+               (2, '😲'),
+               (3, '😌'),
+               (4, '👌'),
+               (5, '😞'))
+    reaction = models.IntegerField(default=0, choices=CHOICES)
 
 
     def __str__(self):
