@@ -64,14 +64,13 @@
             {% for review in comments %}
                 <div class="col-md-6">
                     <b>Review from {{ review.username }}</b><br>
-                    <b>Reaction:</b>{{ review.reaction }}
+                    <b>Reaction:</b>{{ review.get_reaction_display }}
                     <p>{{ review.message }}</p>
                 </div>
             {% endfor %}
         {% else %}
             <p>There are no reviews for this track. Why not add one?</p>
         {% endif %}
-
         </div>
     </div>
 {% endblock %}

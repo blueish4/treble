@@ -138,9 +138,12 @@ def add_song_comment(request, song_id):  # This needs to be the POST endpoint fo
         return HttpResponseRedirect(reverse('song', kwargs={"song_id": song_id}))
 
     form = CommentForm(request.POST, user=request.user, song_id=song_id)
+    # Set the username and song id on the server side
+    data_copy = form.data.copy()
+    data_copy["song_id"] = str(song_id)
+    data_copy["username"] = str(request.user.id)
+    form.data = data_copy
     if form.is_valid():
-        form.cleaned_data["username"] = UserProfile.objects.get(user_id=request.user.id)
-        form.cleaned_data["song_id"] = Song.objects.get(song_id=song_id)
         form.save(commit=True)
     else:
         print(form.errors)
