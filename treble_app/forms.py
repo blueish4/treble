@@ -21,8 +21,11 @@ class SongForm(forms.ModelForm):
 
 class CommentForm(forms.ModelForm):
     message = forms.CharField(
-        max_length=250, help_text="Please give a review.", widget=forms.Textarea(attrs={"class": "col-sm-6", "rows": 3}))
-    reaction = forms.IntegerField(max_value=5, min_value=0, widget=forms.Select(choices=Comment.CHOICES))
+        max_length=250, help_text="Please give a review.",
+        widget=forms.Textarea(attrs={"class": "col-sm-9 form-control form-control-lg",
+                                     "rows": 2}))
+    reaction = forms.IntegerField(max_value=5, min_value=0, widget=forms.Select(choices=Comment.CHOICES,
+                                                                                attrs={"class": "col-sm-9 form-control"}))
 
     class Meta:
         model = Comment
@@ -32,6 +35,7 @@ class CommentForm(forms.ModelForm):
         user = kwargs.pop('user', '')
         song_id = kwargs.pop('song_id', '')
         super(CommentForm, self).__init__(*args, **kwargs)
+        self.fields['message'].label = "Comment"
         self.fields['username'] = forms.ModelChoiceField(
             queryset=UserProfile.objects.filter(user_id=user), initial=UserProfile.objects.none(),
             widget=forms.HiddenInput)
