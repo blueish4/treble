@@ -2,6 +2,7 @@ from django.test import TestCase
 from .models import Song, UserProfile, Comment
 import population_script
 from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
 
 
 class ModelTests(TestCase):
@@ -83,3 +84,57 @@ class ModelTests(TestCase):
 
         # Check if username_slug was made correctly
         self.assertEquals(user_profile.username_slug, "bob-the-builder")
+
+class IndexViewTests(TestCase):
+
+    def test_index_view_has_most_recommended(self):
+        '''Check to ensure the index displays the top 5 most recommended songs'''
+
+        # Database starts empty, so must be populated
+        add_song(1,"one",1)
+        add_song(2,"two",2)
+        add_song(3,"three",3)
+        add_song(4,"four",4)
+        add_song(5,"five",5)
+        add_song(6,"six",6)
+
+        response = self.client.get(reverse('index'))
+        self.assertEqual(response.status_code, 200)
+
+        # Only show top 5
+        # TODO Maybe remove these two assertions if song titles won't be displayed
+        self.assertNotContains(response, "one")
+        self.assertContains(response, "six")
+
+        num_songs = len(response.context['most_recommended_songs'])
+        self.assertEqual(num_songs, 5)
+
+def add_song(song_id, track_name, no_recommendations):
+    '''Helper for index test'''
+    song = Song.objects.get_or_create(song_id=song_id)[0]
+    song.song_id = song_id
+    song.track_name = track_name
+    song.no_recommendations = no_recommendations
+    song.save()
+    return song
+
+class LoginViewTests(TestCase):
+
+    def test_login_succedes_with_correct_credentials(self):
+        '''Tests if login succedes when a valid user attempts to log in'''
+        pass
+
+class SongViewTests(TestCase):
+
+    def test_song_view_non_existant_songs(self):
+        '''If the song does not exist, an appropriate message should be displayed'''
+        response = self.client.get(reverse('song', kwargs={"song_id":1}))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['song'], None)
+
+    def test_song_view_negative_id_displays_song_does_not_exist(self):
+        '''If a negative id is provided, the song not found page should appear'''
+        response = self.client.get(reverse('song', kwargs={"song_id":-1}))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['song'], None)
+
