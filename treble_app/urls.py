@@ -15,4 +15,5 @@ urlpatterns = [
     url(r'^contact-us/$', views.contact, name='contact'),
     url(r'^faq/$', views.faq, name='faq'),
     url(r'^logout/$', views.user_logout, name='logout'),
+    url(r'^ajax/navbar_search/$', views.navbar_search, name='navbar_search'),
 ]
