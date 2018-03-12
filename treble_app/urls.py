@@ -15,4 +15,5 @@ urlpatterns = [
     url(r'^contact-us/$', views.contact, name='contact'),
     url(r'^faq/$', views.faq, name='faq'),
     url(r'^logout/$', views.user_logout, name='logout'),
+    url(r'^ajax/spotify/$', views.spotify_lookup, name='spotify_search')
 ]

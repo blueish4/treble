@@ -1,12 +1,13 @@
-from datetime import datetime
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
 from django.core.urlresolvers import reverse
 from treble_app.forms import UserForm, UserProfileForm, SongForm, CommentForm, RecommendationForm
 from treble_app.models import Song, Comment, UserProfile
+from treble_app.spotify_search import search_spotify
+from json import loads
 
 
 def index(request):
@@ -163,6 +164,10 @@ def add_song_recommendation(request, song_id):
         print(form.errors)
 
     return render(request, 'treble/add_recommendation.html', {'form': form})
+
+
+def spotify_lookup(request):
+    return JsonResponse(search_spotify(request.GET.get("track")))
 
 
 def about(request):
