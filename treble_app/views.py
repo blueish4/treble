@@ -3,10 +3,12 @@ from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.http import HttpResponseRedirect, JsonResponse
+from django.http import HttpResponseRedirect, HttpResponse
+from django.core import serializers
 from django.core.urlresolvers import reverse
 from treble_app.forms import UserForm, UserProfileForm, SongForm, CommentForm, RecommendationForm
 from treble_app.models import Song, Comment, UserProfile
+
 
 
 def index(request):
@@ -183,8 +185,9 @@ def user_logout(request):
 
 def navbar_search(request):
     search_term = request.GET.get('search_term', None)
-    data = {
-        'users': User.objects.filter(username__contains=search_term),
-        'songs': Song.objects.filter(track_name__contains=search_term)
-    }
-    return JsonResponse(data)
+    # data = {
+    #     'users': User.objects.filter(username__contains=search_term).values(),
+    #     'songs': Song.objects.filter(track_name__contains=search_term).values()
+    # }
+    to_return = serializers.serialize('json', User.objects.filter(username=search_term), fields=('username',))
+    return HttpResponse(to_return, content_type="application/json")
