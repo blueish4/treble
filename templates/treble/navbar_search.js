@@ -22,19 +22,18 @@ $(function() {
     }
   });
 
-
   $("#search").catcomplete({
       delay: 0,
       source: function(request, response) {
         $.ajax({
           url: "{% url 'navbar_search' %}",
-          dataType: "jsonp",
           data: {
             search_term: request.term
           },
           success: function(data) {
+          console.log(data);
             response(data);
-          }
+          },
         });
       },
       select: function(event, ui) {

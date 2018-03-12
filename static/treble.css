@@ -1,3 +1,7 @@
+.ui-autocomplete {
+    z-index: 1022;
+}
+
 .navbar-brand {
     padding: 0px;
 }
