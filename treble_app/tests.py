@@ -122,7 +122,15 @@ class LoginViewTests(TestCase):
 
     def test_login_succedes_with_correct_credentials(self):
         '''Tests if login succedes when a valid user attempts to log in'''
-        pass
+        user = User(username="Test",id=1)
+        user_profile = UserProfile(user=user)
+        user.password = "test"
+        user.save()
+        user_profile.save()
+
+        response = self.client.post(reverse('login'), {'username':user.username, 'password':user.password}, follow=True)
+        # If login is successful, the user is redirected (302) to homepage (index)
+        self.assertContains(response.redirect_chain, (reverse('index'),302))
 
 class SongViewTests(TestCase):
 
