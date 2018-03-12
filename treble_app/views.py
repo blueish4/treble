@@ -3,12 +3,13 @@ from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
 from django.core import serializers
 from django.core.urlresolvers import reverse
 from treble_app.forms import UserForm, UserProfileForm, SongForm, CommentForm, RecommendationForm
 from treble_app.models import Song, Comment, UserProfile
 
+import json
 
 
 def index(request):
@@ -189,5 +190,26 @@ def navbar_search(request):
     #     'users': User.objects.filter(username__contains=search_term).values(),
     #     'songs': Song.objects.filter(track_name__contains=search_term).values()
     # }
-    to_return = serializers.serialize('json', User.objects.filter(username=search_term), fields=('username',))
-    return HttpResponse(to_return, content_type="application/json")
+    #to_return = serializers.serialize('json', User.objects.filter(username=search_term), fields=('username',))
+    JSONSerializer = serializers.get_serializer("json")
+    json_serializer = JSONSerializer()
+    return_dict = []
+    if Song.objects.filter(track_name__contains=search_term).exists():
+        json_serializer.serialize(Song.objects.filter(track_name__contains=search_term))
+        data = json.loads(json_serializer.getvalue())
+        #info = {"track_name": data[0]['fields']['track_name']}
+                    #"artist": data[0]['fields']['artist']}
+        info = data[0]['fields']['track_name']
+        return_dict.append({"label": info, "category": "Song"})
+
+    if User.objects.filter(username__contains=search_term).exists():
+        json_serializer.serialize(User.objects.filter(username__contains=search_term))
+        data2 = json.loads(json_serializer.getvalue())
+        info = {"username" : data2[0]['fields']['username']}
+        return_dict.append({"label": info, "category": "User"})
+
+
+
+    #to_return = serializers.serialize('json', Song.objects.filter(track_name__contains=search_term), fields=('track_name',))
+
+    return JsonResponse(return_dict, content_type="application/json", safe=False)
