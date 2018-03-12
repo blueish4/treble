@@ -129,7 +129,7 @@ def add_song(request):
     else:
         print(form.errors)
 
-    return render(request, 'treble/add_song.html', {'form': form})
+    return render(request, 'treble/../templates/includes/add_song.html', {'form': form})
 
 
 @login_required
@@ -168,6 +168,10 @@ def add_song_recommendation(request, song_id):
 
 def spotify_lookup(request):
     return JsonResponse(search_spotify(request.GET.get("track")))
+
+
+def search(request, search_term):
+    return render(request, 'treble/search.html', context={"term": search_term})
 
 
 def about(request):

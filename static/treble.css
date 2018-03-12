@@ -54,6 +54,16 @@
     margin: 0;
 }
 
+#spotify-results div{
+    border-bottom: 1px #efefef solid;
+}
+.result-head {
+    margin: 0;
+}
+.result-img {
+    width: inherit;
+}
+
 textarea {
     resize: none;
 }
