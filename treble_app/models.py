@@ -1,3 +1,6 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+
 from django.db import models
 from django.utils import timezone
 import pytz
@@ -52,7 +55,7 @@ class Comment(models.Model):
     datetime = models.DateTimeField(default=timezone.now, blank=True)
 
     # Reactions are between 0 and 5 where:
-    #           0:     Smile Emoji (Default) 
+    #           0:     Smile Emoji (Default)
     #           1:     Love Emoji
     #           2:     Surprised Emoji
     #           3:     Relieved/Relaxed Emoji
