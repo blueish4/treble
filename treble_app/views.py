@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.core.urlresolvers import reverse
 from treble_app.forms import UserForm, UserProfileForm, SongForm, CommentForm, RecommendationForm
 from treble_app.models import Song, Comment, UserProfile
@@ -180,3 +180,11 @@ def faq(request):
 def user_logout(request):
     logout(request)
     return HttpResponseRedirect(reverse('index'))
+
+def navbar_search(request):
+    search_term = request.GET.get('search_term', None)
+    data = {
+        'users': User.objects.filter(username__contains=search_term),
+        'songs': Song.objects.filter(track_name__contains=search_term)
+    }
+    return JsonResponse(data)
