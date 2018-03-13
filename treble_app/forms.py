@@ -4,19 +4,16 @@ from django.contrib.auth.models import User
 
 
 class SongForm(forms.ModelForm):
-    song_id = forms.IntegerField(widget=forms.HiddenInput(), required=False)
     track_name = forms.CharField(max_length=128)
     artist = forms.CharField(max_length=128)
     genre = forms.CharField(max_length=128)
     album = forms.CharField(max_length=128)
-    no_of_recommendations = forms.IntegerField(widget=forms.HiddenInput(), initial=0)
     spotify_uri = forms.CharField(max_length=256)
     artwork_url = forms.CharField(max_length=256)
-    recommended_songs = forms.ModelMultipleChoiceField(queryset=Song, widget=forms.CheckboxSelectMultiple())
 
     class Meta:
         model = Song
-        fields = ('track_name',)
+        exclude = ('song_id', 'recommended_songs', 'no_of_recommendations', 'comments')
 
 
 class CommentForm(forms.ModelForm):

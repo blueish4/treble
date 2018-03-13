@@ -1,7 +1,7 @@
 {% load staticfiles %}
 
 {% block add_modal %}
-    <div class="modal fade bd-add-modal-lg" tabindex="-1" role="dialog" aria-labelledby="add-song-modal-label" aria-hidden="true">
+    <div id="add-song-modal" class="modal fade bd-add-modal-lg" tabindex="-1" role="dialog" aria-labelledby="add-song-modal-label" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -16,18 +16,31 @@
                             <label for="spotify-search">Search with spotify</label>
                             <input type="text" class="form-control" id="spotify-search" placeholder="Search here" autocomplete="off">
                             <div id="spotify-results">
-                                <div class="d-none row" id="result--1">
-                                    <div class="col-10">
-                                        <p class="result-head"></p>
-                                        <p><small class="result-sub"></small></p>
+                                <a href="#">
+                                    <div class="d-none row" id="result--1">
+                                        <div class="col-sm-10 col-8">
+                                            <p class="result-head"></p>
+                                            <p><small class="result-sub"></small></p>
+                                        </div>
+                                        <div class="col-sm-2 col-4">
+                                            <img src="" class="result-img">
+                                        </div>
                                     </div>
-                                    <div class="col-2">
-                                        <img src="" class="result-img">
-                                    </div>
-                                </div>
+                                </a>
                             </div>
                         </div>
                     </form>
+                    <div id="manual-add">
+                        <form action="{% url 'add_song' %}">
+                        {% csrf_token %}
+                            {% for field in add_song_form %}
+                                <div class="row">
+                                    <label for="{{ field.id_for_label }}" class="col-3">{{ field.label }}</label>
+                                    {{ field }}
+                                </div>
+                            {% endfor %}
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>

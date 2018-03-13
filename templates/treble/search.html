@@ -13,5 +13,8 @@
 {% endblock %}
 {% block additional_js %}
     <script src="{% static 'search.js' %}"></script>
-    <script>var search_url = "{% url 'spotify_search' %}";</script>
+    <script>
+        var search_url = "{% url 'spotify_search' %}";
+        var search_term = "{{ term }}";
+    </script>
 {% endblock %}

@@ -129,7 +129,7 @@ def add_song(request):
     else:
         print(form.errors)
 
-    return render(request, 'treble/../templates/includes/add_song.html', {'form': form})
+    return HttpResponse(request, form)
 
 
 @login_required
@@ -171,7 +171,8 @@ def spotify_lookup(request):
 
 
 def search(request, search_term):
-    return render(request, 'treble/search.html', context={"term": search_term})
+    return render(request, 'treble/search.html', context={"term": search_term,
+                                                          "add_song_form": SongForm(request.POST)})
 
 
 def about(request):
