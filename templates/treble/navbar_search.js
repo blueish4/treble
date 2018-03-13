@@ -1,4 +1,31 @@
 $(function() {
+  document.getElementById("search_button").onclick = function search(request, response){
+    var full_search = document.getElementById("search").value;
+    for (i=0; i<2; i++){
+      if(result[i]['category'] == "Song"){
+        $.each(result[i]['label'], function(index, song) {
+            if (song['track_name'] == full_search){
+              id = song['song_id'];
+            }
+        });
+        $.ajax({
+            url: "/treble/song/"+id,
+            data: {
+                search_term: request.term
+            },
+            success: window.location.replace("/treble/song/"+id)
+        });
+      }
+      else if (result[1]['category'] == "User"){
+
+        $.each(result[i]['label'], function(index, user) {
+
+        });
+      }
+
+    }
+  }
+
     $.widget("custom.catcomplete", $.ui.autocomplete, {
         _create: function() {
         this._super();
@@ -30,7 +57,6 @@ $(function() {
         });
     }
   });
-
   $("#search").catcomplete({
       delay: 0,
       source: function(request, response) {
@@ -40,6 +66,7 @@ $(function() {
                 search_term: request.term
             },
             success: function(data) {
+                result = data;
                 response(data);
             },
         });
@@ -47,4 +74,6 @@ $(function() {
       select: function(event, ui) {
       }
   });
+
+
 });
