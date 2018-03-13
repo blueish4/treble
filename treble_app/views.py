@@ -186,30 +186,32 @@ def user_logout(request):
 
 def navbar_search(request):
     search_term = request.GET.get('search_term', None)
-    # data = {
-    #     'users': User.objects.filter(username__contains=search_term).values(),
-    #     'songs': Song.objects.filter(track_name__contains=search_term).values()
-    # }
-    #to_return = serializers.serialize('json', User.objects.filter(username=search_term), fields=('username',))
+
     JSONSerializer = serializers.get_serializer("json")
     json_serializer = JSONSerializer()
+
     return_dict = []
-    if Song.objects.filter(track_name__contains=search_term).exists():
-        json_serializer.serialize(Song.objects.filter(track_name__contains=search_term))
+
+    track_match = Song.objects.filter(track_name__contains=search_term)
+    if track_match.exists():
+
+        json_serializer.serialize(track_match)
         data = json.loads(json_serializer.getvalue())
-        #info = {"track_name": data[0]['fields']['track_name']}
-                    #"artist": data[0]['fields']['artist']}
-        info = data[0]['fields']['track_name']
+
+        info = []
+        for track in data:
+            info.append({'track_name': track['fields']['track_name'], 'artist': track['fields']['artist']})
+
+        #info = [data[0]['fields']['track_name'], data[0]['fields']['artist']]
         return_dict.append({"label": info, "category": "Song"})
 
-    if User.objects.filter(username__contains=search_term).exists():
-        json_serializer.serialize(User.objects.filter(username__contains=search_term))
+    user_match = User.objects.filter(username__contains=search_term)
+    if user_match.exists():
+
+        json_serializer.serialize(user_match)
         data2 = json.loads(json_serializer.getvalue())
-        info = {"username" : data2[0]['fields']['username']}
+
+        info = data2[0]['fields']['username']
         return_dict.append({"label": info, "category": "User"})
-
-
-
-    #to_return = serializers.serialize('json', Song.objects.filter(track_name__contains=search_term), fields=('track_name',))
 
     return JsonResponse(return_dict, content_type="application/json", safe=False)
