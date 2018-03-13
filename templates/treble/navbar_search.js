@@ -6,7 +6,7 @@ $(function() {
     },
     _renderItemSong: function(ul, item){
         var newHtml = "<div class='ui-menu-item-wrapper'><div class='search-menu-song'>" + item.track_name + "</div><div class='search-menu-artist'>by " + item.artist + "</div></div>";
-        return $("<li>").append(newHtml).appendTo(ul);
+        return $("<li>").data("ui-autocomplete-item",{"label":item.track_name,"value":item.track_name}).append(newHtml).appendTo(ul);
     },
     _renderMenu: function(ul, items) {
         var that = this,
