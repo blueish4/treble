@@ -11,6 +11,7 @@ urlpatterns = [
     url(r'^song/(?P<song_id>[\d]+)/$', views.song, name='song'),
     url(r'^song/(?P<song_id>[\d]+)/comment/$', views.add_song_comment, name='song_comment'),
     url(r'^song/(?P<song_id>[\d]+)/add-recommendation/$', views.add_song_recommendation, name='song_recommendation'),
+    url(r'^ajax/search/$', views.search_site, name='search_site'),
     url(r'^about-us/$', views.about, name='about'),
     url(r'^contact-us/$', views.contact, name='contact'),
     url(r'^faq/$', views.faq, name='faq'),
