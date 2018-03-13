@@ -125,11 +125,10 @@ def add_song(request):
     if form.is_valid():
         form.save(commit=True)
         # Redirect to homepage **FOR NOW**
-        return HttpResponseRedirect(reverse('index'))
+        return HttpResponse("{'success': true}")
     else:
         print(form.errors)
-
-    return HttpResponse(request, form)
+        return HttpResponse(form.errors)
 
 
 @login_required

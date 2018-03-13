@@ -15,9 +15,9 @@
                         <div class="form-group">
                             <label for="spotify-search">Search with spotify</label>
                             <input type="text" class="form-control" id="spotify-search" placeholder="Search here" autocomplete="off">
-                            <div id="spotify-results">
-                                <a href="#">
-                                    <div class="d-none row" id="result--1">
+                            <ul id="spotify-results">
+                                <a href="#" class="d-none" id="result--1">
+                                    <li class="row" >
                                         <div class="col-sm-10 col-8">
                                             <p class="result-head"></p>
                                             <p><small class="result-sub"></small></p>
@@ -25,16 +25,16 @@
                                         <div class="col-sm-2 col-4">
                                             <img src="" class="result-img">
                                         </div>
-                                    </div>
+                                    </li>
                                 </a>
-                            </div>
+                            </ul>
                         </div>
                     </form>
                     <div id="manual-add">
-                        <form action="{% url 'add_song' %}">
+                        <form id="add-song-form" action="{% url 'add_song' %}" method="post">
                         {% csrf_token %}
                             {% for field in add_song_form %}
-                                <div class="row">
+                                <div class="row form-row">
                                     <label for="{{ field.id_for_label }}" class="col-3">{{ field.label }}</label>
                                     {{ field }}
                                 </div>
@@ -42,6 +42,10 @@
                         </form>
                     </div>
                 </div>
+            <div class="modal-footer">
+                <button class="btn" id="add-clear">Clear</button>
+                <button class="btn btn-primary" type="submit" form="add-song-form">Save</button>
+            </div>
             </div>
         </div>
     </div>
