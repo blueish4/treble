@@ -212,9 +212,8 @@ def navbar_search(request):
         data2 = json.loads(json_serializer.getvalue())
         profile = UserProfile.objects.get(user=user_match)
 
-        #info = {"username": data2[0]['fields']['username'], "username_slug": profile.username_slug}
-        info = data2[0]['fields']['username']
-        return_dict.append({"label": info, "category": "User", })
+        info = [{"username": data2[0]['fields']['username'], "username_slug": profile.username_slug}]
+        return_dict.append({"label": info, "category": "User" })
 
     return JsonResponse(return_dict, content_type="application/json", safe=False)
 
