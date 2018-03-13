@@ -202,7 +202,6 @@ def navbar_search(request):
         for track in data:
             info.append({'track_name': track['fields']['track_name'], 'artist': track['fields']['artist'], "song_id": track['pk']})
 
-        #info = [data[0]['fields']['track_name'], data[0]['fields']['artist']]
         return_dict.append({"label": info, "category": "Song"})
 
     user_match = User.objects.filter(username__contains=search_term)
