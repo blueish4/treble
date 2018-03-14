@@ -202,17 +202,20 @@ def navbar_search(request):
         for track in data:
             info.append({'track_name': track['fields']['track_name'], 'artist': track['fields']['artist'], "song_id": track['pk']})
 
-        return_dict.append({"label": info, "category": "Song"})
+        return_dict.append({"label": info, "category": "Song", "logged_in": True})
 
-    user_match = User.objects.filter(username__contains=search_term)
-    if user_match.exists():
+    if request.user.is_authenticated():
+        user_match = User.objects.filter(username__contains=search_term)
+        if user_match.exists():
 
-        json_serializer.serialize(user_match)
-        data2 = json.loads(json_serializer.getvalue())
-        profile = UserProfile.objects.get(user=user_match)
+            json_serializer.serialize(user_match)
+            data2 = json.loads(json_serializer.getvalue())
+            profile = UserProfile.objects.get(user=user_match)
 
-        info = [{"username": data2[0]['fields']['username'], "username_slug": profile.username_slug}]
-        return_dict.append({"label": info, "category": "User" })
+            info = [{"username": data2[0]['fields']['username'], "username_slug": profile.username_slug}]
+            return_dict.append({"label": info, "category": "User", "logged_in": True })
+    else:
+        return_dict.append({"label": "You need to be logged in to view users", "category": "User", "logged_in":False})
 
     return JsonResponse(return_dict, content_type="application/json", safe=False)
 
