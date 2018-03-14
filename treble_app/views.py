@@ -1,4 +1,3 @@
-from datetime import datetime
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -8,6 +7,8 @@ from django.core import serializers
 from django.core.urlresolvers import reverse
 from treble_app.forms import UserForm, UserProfileForm, SongForm, CommentForm, RecommendationForm
 from treble_app.models import Song, Comment, UserProfile
+from treble_app.spotify_search import search_spotify
+from json import loads
 
 import json
 
@@ -125,13 +126,12 @@ def song(request, song_id):
 def add_song(request):
     form = SongForm(request.POST)
     if form.is_valid():
-        form.save(commit=True)
-        # Redirect to homepage **FOR NOW**
-        return HttpResponseRedirect(reverse('index'))
+        saved = form.save(commit=True)
+        song_id = Song.objects.get(spotify_uri=saved.spotify_uri, track_name=saved.track_name).song_id
+        return HttpResponse("{\"success\": "+str(song_id)+"}")
     else:
         print(form.errors)
-
-    return render(request, 'treble/add_song.html', {'form': form})
+        return HttpResponse(form.errors)
 
 
 @login_required
@@ -166,6 +166,15 @@ def add_song_recommendation(request, song_id):
         print(form.errors)
 
     return render(request, 'treble/add_recommendation.html', {'form': form})
+
+
+def spotify_lookup(request):
+    return JsonResponse(search_spotify(request.GET.get("track")))
+
+
+def search(request, search_term):
+    return render(request, 'treble/search.html', context={"term": search_term,
+                                                          "add_song_form": SongForm(request.POST)})
 
 
 def about(request):
