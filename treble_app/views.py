@@ -225,17 +225,3 @@ def navbar_search(request):
         return_dict.append({"label": info, "category": "User" })
 
     return JsonResponse(return_dict, content_type="application/json", safe=False)
-
-def search_site(request, search_term):
-    track_match = Song.objects.filter(track_name=search_term)
-    user_match = User.objects.filter(username__contains=search_term)
-    context_dict ={}
-    if track_match.exists():
-        song = Song.objects.get(track_name=search_term)
-        comments = Comment.objects.filter(song_id=song.song_id)
-        context_dict['song'] = song
-        context_dict['recommended'] = song.recommended_songs.all()
-        context_dict['comments'] = comments
-        return HttpResponseRedirect(reverse('song', kwargs={"song_id": song.song_id}))
-    elif user_match.exists() and request.user.is_authenticated():
-        return HttpResponseRedirect(reverse('index'))
