@@ -81,9 +81,14 @@ $(function(){
             url: add_endpoint,
             data: data,
             type: "post",
-            dataType: "text"
+            dataType: "json"
         }).done(function(data){
-            $("#add-song-modal").modal("hide");
+            if(data.success){
+                window.location.href = song_url_stub.replace("0", data.success);
+                $("#add-song-modal").modal("hide");
+            } else {
+
+            }
             alert("SAVED");
         })
     })

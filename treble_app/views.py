@@ -123,9 +123,9 @@ def song(request, song_id):
 def add_song(request):
     form = SongForm(request.POST)
     if form.is_valid():
-        form.save(commit=True)
-        # Redirect to homepage **FOR NOW**
-        return HttpResponse("{'success': true}")
+        saved = form.save(commit=True)
+        song_id = Song.objects.get(spotify_uri=saved.spotify_uri, track_name=saved.track_name).song_id
+        return HttpResponse("{\"success\": "+str(song_id)+"}")
     else:
         print(form.errors)
         return HttpResponse(form.errors)
