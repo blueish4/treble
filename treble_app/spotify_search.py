@@ -1,4 +1,3 @@
-from requests import get, post
 from base64 import b64encode
 from json import dump, load
 
@@ -13,7 +12,7 @@ def get_access_token(client_id, client_secret):
     headers = {"Authorization": "Basic " + encoded}
     data = {"grant_type": "client_credentials"}
 
-    response = post(token_url, data=data, headers=headers)
+    response = request.post(token_url, data=data, headers=headers)
 
     return response.json()['access_token']
 
@@ -23,7 +22,7 @@ def get_data_from_spotify(track_name, access_token):
     search_url = "https://api.spotify.com/v1/search?q=track:" + track_name + "&type=track&limit=5"
 
     headers = {"Authorization": "Bearer " + access_token}
-    response = get(search_url, headers=headers)
+    response = request.get(search_url, headers=headers)
 
     return response
 
