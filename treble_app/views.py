@@ -3,11 +3,14 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
+from django.core import serializers
 from django.core.urlresolvers import reverse
 from treble_app.forms import UserForm, UserProfileForm, SongForm, CommentForm, RecommendationForm
 from treble_app.models import Song, Comment, UserProfile
 from treble_app.spotify_search import search_spotify
 from json import loads
+
+import json
 
 
 def index(request):
@@ -189,3 +192,50 @@ def faq(request):
 def user_logout(request):
     logout(request)
     return HttpResponseRedirect(reverse('index'))
+
+def navbar_search(request):
+    search_term = request.GET.get('search_term', None)
+
+    JSONSerializer = serializers.get_serializer("json")
+    json_serializer = JSONSerializer()
+
+    return_dict = []
+
+    track_match = Song.objects.filter(track_name__contains=search_term)
+    if track_match.exists():
+
+        json_serializer.serialize(track_match)
+        data = json.loads(json_serializer.getvalue())
+
+        info = []
+        for track in data:
+            info.append({'track_name': track['fields']['track_name'], 'artist': track['fields']['artist'], "song_id": track['pk']})
+
+        #info = [data[0]['fields']['track_name'], data[0]['fields']['artist']]
+        return_dict.append({"label": info, "category": "Song"})
+
+    user_match = User.objects.filter(username__contains=search_term)
+    if user_match.exists():
+
+        json_serializer.serialize(user_match)
+        data2 = json.loads(json_serializer.getvalue())
+        profile = UserProfile.objects.get(user=user_match)
+
+        info = [{"username": data2[0]['fields']['username'], "username_slug": profile.username_slug}]
+        return_dict.append({"label": info, "category": "User" })
+
+    return JsonResponse(return_dict, content_type="application/json", safe=False)
+
+def search_site(request, search_term):
+    track_match = Song.objects.filter(track_name=search_term)
+    user_match = User.objects.filter(username__contains=search_term)
+    context_dict ={}
+    if track_match.exists():
+        song = Song.objects.get(track_name=search_term)
+        comments = Comment.objects.filter(song_id=song.song_id)
+        context_dict['song'] = song
+        context_dict['recommended'] = song.recommended_songs.all()
+        context_dict['comments'] = comments
+        return HttpResponseRedirect(reverse('song', kwargs={"song_id": song.song_id}))
+    elif user_match.exists() and request.user.is_authenticated():
+        return HttpResponseRedirect(reverse('index'))

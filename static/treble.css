@@ -1,3 +1,19 @@
+.search-menu-song {
+    font-weight: bold;
+}
+
+.search-menu-artist {
+    font-style: italic;
+}
+
+.ui-autocomplete-category {
+    background-color: #dddddd;
+}
+
+.ui-autocomplete {
+    z-index: 1022;
+}
+
 .navbar-brand {
     padding: 0px;
 }
