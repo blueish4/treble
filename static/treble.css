@@ -1,3 +1,8 @@
+.search-menu-not-logged-in {
+  font-style: italic;
+  font-size: 0.9em;
+}
+
 .search-menu-song {
     font-weight: bold;
 }
@@ -8,6 +13,7 @@
 
 .ui-autocomplete-category {
     background-color: #dddddd;
+    padding-left: 6px;
 }
 
 .ui-autocomplete {
