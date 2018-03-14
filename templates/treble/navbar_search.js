@@ -28,9 +28,13 @@ $(function() {
                         li = that._renderItemSong(ul, value);
                     })
                 } else {
-                    $.each(item.label,function(key,value){
-                        li = that._renderItemUser(ul, value);
-                    })
+                    if (item.logged_in){
+                        $.each(item.label,function(key,value){
+                            li = that._renderItemUser(ul, value);
+                        })
+                    } else {
+                        console.log("Not logged in");
+                    }
                 }
             }
         });
