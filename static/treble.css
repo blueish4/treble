@@ -70,6 +70,25 @@
     margin: 0;
 }
 
+#spotify-results {
+    padding:0;
+}
+
+#spotify-results div{
+    border-bottom: 1px #efefef solid;
+}
+.result-head {
+    margin: 0;
+}
+.result-img {
+    width: inherit;
+}
+
 textarea {
     resize: none;
+}
+
+.result {
+    text-decoration: none;
+    color: inherit;
 }

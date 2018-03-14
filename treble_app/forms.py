@@ -4,19 +4,21 @@ from django.contrib.auth.models import User
 
 
 class SongForm(forms.ModelForm):
-    song_id = forms.IntegerField(widget=forms.HiddenInput(), required=False)
-    track_name = forms.CharField(max_length=128)
-    artist = forms.CharField(max_length=128)
-    genre = forms.CharField(max_length=128)
-    album = forms.CharField(max_length=128)
-    no_of_recommendations = forms.IntegerField(widget=forms.HiddenInput(), initial=0)
-    spotify_uri = forms.CharField(max_length=256)
-    artwork_url = forms.CharField(max_length=256)
-    recommended_songs = forms.ModelMultipleChoiceField(queryset=Song, widget=forms.CheckboxSelectMultiple())
-
     class Meta:
         model = Song
-        fields = ('track_name',)
+        exclude = ('song_id', 'recommended_songs', 'no_of_recommendations', 'comments')
+
+    def __init__(self, *args, **kwargs):
+        def text_input(length, **kwargs):
+            return forms.CharField(max_length=length, widget=forms.TextInput(attrs={"class": "col-sm-9 form-control",
+                                                                                    "autocomplete": "off"}), **kwargs)
+        super(SongForm, self).__init__(*args, **kwargs)
+        self.fields['track_name'] = text_input(128, required=True)
+        self.fields['artist'] = text_input(128, required=True)
+        self.fields['genre'] = text_input(128)
+        self.fields['album'] = text_input(128, required=True)
+        self.fields['spotify_uri'] = text_input(128)
+        self.fields['artwork_url'] = text_input(128)
 
 
 class CommentForm(forms.ModelForm):

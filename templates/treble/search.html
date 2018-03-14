@@ -1,0 +1,22 @@
+{% extends 'treble/base.html' %}
+{% load staticfiles %}
+
+{% block title_block %}
+    {{ search_term }} - Search
+{% endblock %}
+
+{% block body_block %}
+    <h1>This is the search page</h1>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-add-modal-lg">Add song</button>
+    {% include 'includes/add_song.html' %}
+    <p>You searched for: {{ term }}</p>
+{% endblock %}
+{% block additional_js %}
+    <script src="{% static 'search.js' %}"></script>
+    <script>
+        var search_url = "{% url 'spotify_search' %}";
+        var search_term = "{{ term }}";
+        var add_endpoint = "{% url 'add_song' %}";
+        var song_url_stub = "{% url 'song' 0 %}"
+    </script>
+{% endblock %}
