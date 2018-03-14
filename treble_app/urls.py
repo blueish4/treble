@@ -11,8 +11,8 @@ class MyRegistrationView(RegistrationView):
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),
-    url(r'^login/$', views.user_login, name='login'),
-    url(r'^register/$', views.register, name='register'),
+    #url(r'^login/$', views.user_login, name='login'),
+    #url(r'^register/$', views.register, name='register'),
     url(r'^user/(?P<username_slug>[\w\-]+)/$',
         views.user_profile, name='user_profile'),
     url(r'^user/my-account$', views.user_account, name='user_account'),
@@ -22,9 +22,10 @@ urlpatterns = [
     url(r'^about-us/$', views.about, name='about'),
     url(r'^contact-us/$', views.contact, name='contact'),
     url(r'^faq/$', views.faq, name='faq'),
-    url(r'^logout/$', views.user_logout, name='logout'),
+    #url(r'^logout/$', views.user_logout, name='logout'),
 	url(r'^accounts/', include('registration.backends.simple.urls')),
 	url(r'^accounts/register/$',
 		MyRegistrationView.as_view(),
 			name='registration_register'),
+	url(r'^accounts/password/change/$', views.password_change, name='password_change'),
 ]
