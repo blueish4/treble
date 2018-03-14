@@ -1,3 +1,7 @@
+body {
+    font-family: 'Source Sans Pro', sans-serif;
+}
+
 .search-menu-not-logged-in {
   font-style: italic;
   font-size: 0.9em;
