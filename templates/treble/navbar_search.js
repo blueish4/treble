@@ -1,34 +1,4 @@
 $(function() {
-  document.getElementById("search_button").onclick = function search(request, response){
-    var full_search = document.getElementById("search").value;
-
-    for(i=0; i<2; i++){
-          $.each(result[i]['label'], function(index, item) {
-            if (full_search == item['track_name']){
-              id = item['song_id'];
-              $.ajax({
-                  url: "/treble/song/"+id,
-                  data: {
-                      search_term: request.term
-                  },
-                  success: window.location.replace("/treble/song/"+id)
-              });
-
-            }
-            else if (full_search == item['username']){
-              slug = item['username_slug'];
-              $.ajax({
-                  url: "/treble/user/"+slug,
-                  data: {
-                      search_term: request.term
-                  },
-                  success: window.location.replace("/treble/user/"+slug)
-              });
-            }
-          });
-    }
-  }
-
     $.widget("custom.catcomplete", $.ui.autocomplete, {
         _create: function() {
         this._super();
@@ -36,14 +6,18 @@ $(function() {
     },
     _renderItemSong: function(ul, item){
         var newHtml = "<div class='ui-menu-item-wrapper'><div class='search-menu-song'>" + item.track_name + "</div><div class='search-menu-artist'>by " + item.artist + "</div></div>";
-        return $("<li>").data("ui-autocomplete-item",{"label":item.track_name,"value":item.track_name}).append(newHtml).appendTo(ul);
+        return $("<li>").data("ui-autocomplete-item",{"label":item.track_name,"value":item.track_name,"link":"{% url 'song' song_id=0 %}".replace(/0/,item.song_id)}).append(newHtml).appendTo(ul);
     },
     _renderItemUser: function(ul, item){
-        var newHtml = "<div class='ui-menu-item-wrapper'><div class='search-menu-song'>" + item.username;
-        return $("<li>").data("ui-autocomplete-item",{"label":item.username,"value":item.username}).append(newHtml).appendTo(ul);
+        var newHtml = "<div class='ui-menu-item-wrapper'><div class='search-menu-song'>" + item.username + "</div></div>";
+        return $("<li>").data("ui-autocomplete-item",{"label":item.username,"value":item.username,"link":"{% url 'user_profile' username_slug=0 %}".replace(/0/,item.username_slug)}).append(newHtml).appendTo(ul);
+    },
+    _renderItemUserNotLoggedIn: function(ul, label){
+        var newHtml = "<div class='ui-menu-item-wrapper'><div class='search-menu-not-logged-in'>" + label + "</div></div>";
+        return $("<li>").data("ui-autocomplete-item",{"link":"{% url 'login' %}"}).append(newHtml).appendTo(ul);
     },
     _renderMenu: function(ul, items) {
-        var that = this,
+        var that = this;
         currentCategory = "";
         $.each(items, function(index, item) {
             var li;
@@ -58,9 +32,14 @@ $(function() {
                         li = that._renderItemSong(ul, value);
                     })
                 } else {
-                    $.each(item.label,function(key,value){
-                        li = that._renderItemUser(ul, value);
-                    })
+                    if (item.logged_in){
+                        $.each(item.label,function(key,value){
+                            li = that._renderItemUser(ul, value);
+                        })
+                    } else {
+                        console.log(item.label);
+                        li = that._renderItemUserNotLoggedIn(ul, item.label);
+                    }
                 }
             }
         });
@@ -81,6 +60,7 @@ $(function() {
         });
       },
       select: function(event, ui) {
+        window.location.replace(ui.item.link);
       }
   });
 
