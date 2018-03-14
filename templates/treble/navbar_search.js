@@ -12,6 +12,10 @@ $(function() {
         var newHtml = "<div class='ui-menu-item-wrapper'><div class='search-menu-song'>" + item.username + "</div></div>";
         return $("<li>").data("ui-autocomplete-item",{"label":item.username,"value":item.username,"link":"{% url 'user_profile' username_slug=0 %}".replace(/0/,item.username_slug)}).append(newHtml).appendTo(ul);
     },
+    _renderItemUserNotLoggedIn: function(ul, label){
+        var newHtml = "<div class='ui-menu-item-wrapper'><div class='search-menu-not-logged-in'>" + label + "</div></div>";
+        return $("<li>").data("ui-autocomplete-item",{"link":"{% url 'login' %}"}).append(newHtml).appendTo(ul);
+    },
     _renderMenu: function(ul, items) {
         var that = this;
         currentCategory = "";
@@ -33,7 +37,8 @@ $(function() {
                             li = that._renderItemUser(ul, value);
                         })
                     } else {
-                        console.log("Not logged in");
+                        console.log(item.label);
+                        li = that._renderItemUserNotLoggedIn(ul, item.label);
                     }
                 }
             }
