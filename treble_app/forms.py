@@ -31,7 +31,7 @@ class CommentForm(forms.ModelForm):
 
     class Meta:
         model = Comment
-        exclude = ('comment_id', 'datetime')
+        exclude = ('comment_id', ) #'datetime')
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', '')
@@ -44,6 +44,7 @@ class CommentForm(forms.ModelForm):
         self.fields['song_id'] = forms.ModelChoiceField(
             queryset=Song.objects.filter(song_id=song_id), initial=Song.objects.none(),
             widget=forms.HiddenInput)
+        self.fields['datetime'] = forms.DateField(initial=datetime.date.today, widget=forms.HiddenInput)
 
 
 class RecommendationForm(forms.Form):
