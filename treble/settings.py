@@ -39,11 +39,13 @@ INSTALLED_APPS = [
     'treble_app',
     'registration',
     'django.contrib.auth',
+	'django.contrib.sites',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
 ]
+SITE_ID = 1
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -54,6 +56,12 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+PASSWORD_HASHERS = (
+	'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
+	'django.contrib.auth.hashers.BCryptPasswordHasher',
+	'django.contrib.auth.hashers.PBKDF2PasswordHasher',
+	'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',)
 
 ROOT_URLCONF = 'treble.urls'
 
@@ -72,9 +80,29 @@ TEMPLATES = [
         },
     },
 ]
+LOGIN_URL = '/login/'
 
 WSGI_APPLICATION = 'treble.wsgi.application'
 
+# If True, users can register
+REGISTRATION_OPEN = True
+# If True, the user will be automatically logged in.
+REGISTRATION_AUTO_LOGIN = True
+# The page you want users to arrive at after they successfully log in
+LOGIN_REDIRECT_URL = '/treble/'
+# The page users are directed to if they are not logged in,
+# and are trying to access pages requiring authentication
+LOGIN_URL = '/accounts/login/'
+
+#redux user auth email stuff
+ACCOUNT_ACTIVATION_DAYS = 2
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'trebleserver@gmail.com'
+EMAIL_HOST_PASSWORD = 'guccigangguccigangguccigang' #lil pump, ooh!
+EMAIL_PORT = 587
+#EMAIL_HOST = 'localhost'
+#DEFAULT_FROM_EMAIL = 'webmaster@localhost'
 
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
@@ -107,23 +135,9 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-PASSWORD_HASHERS = (
-	'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
-	'django.contrib.auth.hashers.BCryptPasswordHasher',
-	'django.contrib.auth.hashers.PBKDF2PasswordHasher',
-	'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',)
 
-# If True, users can register
-REGISTRATION_OPEN = True
-# One-week activation window; you may, of course, use a different value.
-ACCOUNT_ACTIVATION_DAYS = 7
-# If True, the user will be automatically logged in.
-REGISTRATION_AUTO_LOGIN = True
-# The page you want users to arrive at after they successfully log in
-LOGIN_REDIRECT_URL = '/treble/'
-# The page users are directed to if they are not logged in,
-# and are trying to access pages requiring authentication
-LOGIN_URL = '/accounts/login/'
+
+
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 

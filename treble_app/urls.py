@@ -23,9 +23,9 @@ urlpatterns = [
     url(r'^contact-us/$', views.contact, name='contact'),
     url(r'^faq/$', views.faq, name='faq'),
     #url(r'^logout/$', views.user_logout, name='logout'),
-	url(r'^accounts/', include('registration.backends.simple.urls')),
-	url(r'^accounts/register/$',
-		MyRegistrationView.as_view(),
-			name='registration_register'),
+	url(r'^accounts/', include('registration.backends.default.urls')),
+	#url(r'^accounts/register/$',
+	#	MyRegistrationView.as_view(),
+	#		name='registration_register'),
 	url(r'^accounts/password/change/$', views.password_change, name='password_change'),
 ]
