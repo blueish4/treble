@@ -95,14 +95,14 @@ def register(request):
 
 @login_required  # Can only view other profiles if user is logged in
 def user_profile(request, username_slug):
-    return render(request, 'treble/user_profile.html',{})
+    user = UserProfile.objects.get(username_slug=username_slug)
+    return render(request, 'treble/user_profile.html', {'user': user})
 
 
 @login_required
 def user_account(request):
     user = UserProfile.objects.get(user_id=request.user.id)
-    return HttpResponseRedirect(reverse('user_profile',kwargs={"username_slug":user.username_slug}))
-
+    return render(request, 'treble/user_account.html', {'user': user})
 
 def song(request, song_id):
     if int(song_id) < 1:
