@@ -10,6 +10,8 @@ from treble_app.models import Song, Comment, UserProfile
 from treble_app.spotify_search import search_spotify
 from json import loads
 
+import datetime
+
 import json
 
 
@@ -55,19 +57,19 @@ def register(request):
     # set to false initially. code changes value to
     # true when registration succeeds
     registered = False
-    
+
     # If its a HTTP POST, we're interested in processing form data.
     if request.method == 'POST':
         # attempt to grab information from raw form information.
         # Note that we make use of both UserForm and UserProfileForm.
         user_form = UserForm(data=request.POST)
         profile_form = UserProfileForm(data=request.POST)
-        
+
         # if the two forms are valid...
         if user_form.is_valid() and profile_form.is_valid():
             # Save the user's form data to the database.
             user = user_form.save()
-            
+
             # Now we hash the password with the set_password method.
             # Once hashed, we can update the user object.
 
@@ -79,7 +81,7 @@ def register(request):
             # until we're ready to avoid integrity problems.
             profile = profile_form.save(commit=False)
             profile.user = user
-            
+
             # Did the user provide a profile picture?
             # If so , we need to get it from the input form and
             # put it in the UserProfile model.
@@ -87,7 +89,7 @@ def register(request):
                 profile.picture = request.FILES['picture']
             # now we save the UserProfile model instance
             profile.save()
-            
+
             # update our variable to indicate that the template
             # registration was successful
             registered = True
@@ -164,6 +166,8 @@ def add_song_comment(request, song_id):
     data_copy = form.data.copy()
     data_copy["song_id"] = str(song_id)
     data_copy["username"] = str(request.user.id)
+    data_copy["datetime"] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    print(data_copy["datetime"])
     form.data = data_copy
     if form.is_valid():
         form.save(commit=True)

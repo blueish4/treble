@@ -53,7 +53,7 @@ class Comment(models.Model):
     song_id = models.ForeignKey('Song', default=0)
     username = models.ForeignKey(UserProfile, default=1)
     message = models.CharField(max_length=256)
-    datetime = models.DateTimeField(default=timezone.now, blank=True)
+    datetime = models.DateTimeField(default=datetime.date.today, blank=True)
 
     # Reactions are between 0 and 5 where:
     #           0:     Smile Emoji (Default)

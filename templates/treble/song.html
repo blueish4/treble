@@ -66,7 +66,7 @@
                     <b>Review from {{ review.username }}</b><br>
                     <b>Reaction:</b>{{ review.get_reaction_display }}<br>
                     <p class="comment-message">{{ review.message }}</p>
-                    <p class="comment-date">{{ review.datetime|date:"d M Y" }}</p>
+                    <p class="comment-date">{{ review.datetime|date:"H.i | j M Y" }}</p>
                 </div>
             {% endfor %}
         {% else %}
