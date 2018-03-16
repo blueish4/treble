@@ -35,88 +35,91 @@ def user_login(request):
                 return HttpResponseRedirect(reverse('index'))
             else:
                 message = "Your Treble account is disabled."
-                return render(request, 'register/login.html', {'message': message})
+                return render(request, 'registration/login.html', {'message': message})
         else:
             print("Invalid login details: "+username+" , "+password)
             message = "Invalid login details supplied."
-            return render(request, 'register/login.html', {'message': message})
+            return render(request, 'registration/login.html', {'message': message})
     else:
         message = ''
-        return render(request, 'register/login.html', {'message': message})
+        return render(request, 'registration/login.html', {'message': message})
 
 
 def register(request):
-	#a boolean value for telling te template
-	#whether the registration was successful
-	#set to false initially. code changes value to 
-	#true when registration succeeds
-	registered = False
-	
-	#If its a HTTP POST, we're interested in processing form data.
-	if request.method == 'POST':
-		#attempt to grab information from raw form information.
-		#Note that we make use of both UserForm and UserProfileForm.
-		user_form = UserForm(data=request.POST)
-		profile_form = UserProfileForm(data=request.POST)
-		
-		#if the two forms are valid...
-		if user_form.is_valid() and profile_form.is_valid():
-			#Save the user's form data to the database.
-			user = user_form.save()
-			
-			#Now we hash the password with the set_password method.
-			#Once hashed, we can update the user object.
-					
-			user.set_password(user.password)
-			user.save()
-			#now sort out the UserProfile instance.
-			#Since we need to set the user attribute ourselves, 
-			#we set commit=False. This delays saving the model
-			#until we're ready to avoid integrity problems.
-			profile = profile_form.save(commit=False)
-			profile.user = user
-			
-			#Did the user provide a profile picture?
-			#If so , we need to get it from the input form and 
-			#put it in the UserProfile model.
-			if 'picture' in request.FILES:
-				profile.picture = request.FILES['picture']
-			#now we save the UserProfile model instance
-			profile.save()
-			
-			#update our variable to indicate that the template 
-			#registration was successful
-			registered = True
-		else:
-			#invalid form or forms - mistakes or something else?
-			# print problems to the terminal.
-			print(user_form.errors, profile_form.errors)
-	else:
-		#not a HTTP POST, so we render our form using two ModelForm instances. 
-		#These forms will be blank, ready for user input.
-		user_form = UserForm()
-		profile_form = UserProfileForm()
-	#render the template depending on the context.
-	return render(request,
-				  'register/registeration_form.html',
-				  {'user_form': user_form,
-				   'profile_form': profile_form,
-				   'registered' : registered})
+    # a boolean value for telling te template
+    # whether the registration was successful
+    # set to false initially. code changes value to
+    # true when registration succeeds
+    registered = False
+    
+    # If its a HTTP POST, we're interested in processing form data.
+    if request.method == 'POST':
+        # attempt to grab information from raw form information.
+        # Note that we make use of both UserForm and UserProfileForm.
+        user_form = UserForm(data=request.POST)
+        profile_form = UserProfileForm(data=request.POST)
+        
+        # if the two forms are valid...
+        if user_form.is_valid() and profile_form.is_valid():
+            # Save the user's form data to the database.
+            user = user_form.save()
+            
+            # Now we hash the password with the set_password method.
+            # Once hashed, we can update the user object.
+
+            user.set_password(user.password)
+            user.save()
+            # now sort out the UserProfile instance.
+            # Since we need to set the user attribute ourselves,
+            # we set commit=False. This delays saving the model
+            # until we're ready to avoid integrity problems.
+            profile = profile_form.save(commit=False)
+            profile.user = user
+            
+            # Did the user provide a profile picture?
+            # If so , we need to get it from the input form and
+            # put it in the UserProfile model.
+            if 'picture' in request.FILES:
+                profile.picture = request.FILES['picture']
+            # now we save the UserProfile model instance
+            profile.save()
+            
+            # update our variable to indicate that the template
+            # registration was successful
+            registered = True
+        else:
+            # invalid form or forms - mistakes or something else?
+            # print problems to the terminal.
+            print(user_form.errors, profile_form.errors)
+    else:
+        # not a HTTP POST, so we render our form using two ModelForm instances.
+        # These forms will be blank, ready for user input.
+        user_form = UserForm()
+        profile_form = UserProfileForm()
+    # render the template depending on the context.
+    return render(request,
+                  'registration/registration_form.html',
+                  {'user_form': user_form,
+                   'profile_form': profile_form,
+                   'registered': registered})
 
 
 @login_required  # Can only view other profiles if user is logged in
 def user_profile(request, username_slug):
     user = UserProfile.objects.get(username_slug=username_slug)
-    return render(request, 'treble/user_profile.html', {'user':user})
+    return render(request, 'treble/user_profile.html', {'user': user})
 
 
 @login_required
 def user_account(request):
     user = request.user
-    return render(request, 'treble/user_account.html', {'user':user})
+    return render(request, 'treble/user_account.html', {'user': user})
+
 
 def password_change(request):
-	return render(request, 'registration/password_change_form.html',{})
+    return render(request, 'registration/password_change_form.html', {})
+
+
 def song(request, song_id):
     if int(song_id) < 1:
         return HttpResponseRedirect(reverse('index'))

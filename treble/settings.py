@@ -29,7 +29,7 @@ SECRET_KEY = 'd55t-c8ws-af9h_&yi$*rts!(6=th8df2gf8*3^9r$tltn^1&g'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['treble.pythonanywhere.com','127.0.0.1']
+ALLOWED_HOSTS = ['treble.pythonanywhere.com', '127.0.0.1']
 
 
 # Application definition
@@ -39,13 +39,17 @@ INSTALLED_APPS = [
     'treble_app',
     'registration',
     'django.contrib.auth',
-	'django.contrib.sites',
+    'django.contrib.sites',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
 ]
-SITE_ID = 1
+# SITE_ID = 1
+
+MIGRATION_MODULES = {
+    'sites': 'treble_app.fixtures.sites_migrations',
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -58,10 +62,10 @@ MIDDLEWARE = [
 ]
 
 PASSWORD_HASHERS = (
-	'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
-	'django.contrib.auth.hashers.BCryptPasswordHasher',
-	'django.contrib.auth.hashers.PBKDF2PasswordHasher',
-	'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',)
+    'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
+    'django.contrib.auth.hashers.BCryptPasswordHasher',
+    'django.contrib.auth.hashers.PBKDF2PasswordHasher',
+    'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',)
 
 ROOT_URLCONF = 'treble.urls'
 
@@ -80,7 +84,6 @@ TEMPLATES = [
         },
     },
 ]
-LOGIN_URL = '/login/'
 
 WSGI_APPLICATION = 'treble.wsgi.application'
 
@@ -92,17 +95,15 @@ REGISTRATION_AUTO_LOGIN = True
 LOGIN_REDIRECT_URL = '/treble/'
 # The page users are directed to if they are not logged in,
 # and are trying to access pages requiring authentication
-LOGIN_URL = '/accounts/login/'
+LOGIN_URL = '/treble/login/'
 
-#redux user auth email stuff
+# redux user auth email stuff
 ACCOUNT_ACTIVATION_DAYS = 2
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'trebleserver@gmail.com'
-EMAIL_HOST_PASSWORD = 'guccigangguccigangguccigang' #lil pump, ooh!
+EMAIL_HOST_PASSWORD = 'guccigangguccigangguccigang'  # lil pump, ooh!
 EMAIL_PORT = 587
-#EMAIL_HOST = 'localhost'
-#DEFAULT_FROM_EMAIL = 'webmaster@localhost'
 
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
@@ -114,9 +115,6 @@ DATABASES = {
     }
 }
 
-# Not logged in redirect
-
-LOGIN_URL = '/treble/login/'
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
@@ -135,8 +133,6 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
