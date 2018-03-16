@@ -1,3 +1,48 @@
+body {
+    font-family: 'Source Sans Pro', sans-serif;
+}
+
+.comment-message {
+    margin: 0px;
+}
+
+.comment-date {
+    margin: 0px;
+    font-style: italic;
+    font-size: 0.9em;
+    color: #444444;
+}
+
+.search-menu-not-logged-in {
+  font-style: italic;
+  font-size: 0.9em;
+}
+
+.search-menu-song {
+    font-weight: bold;
+}
+
+.search-menu-artist {
+    font-style: italic;
+}
+
+.ui-autocomplete-category {
+    background-color: #dddddd;
+    padding-left: 6px;
+}
+
+.ui-autocomplete {
+    z-index: 1022;
+}
+
+.navbar-brand {
+    padding: 0px;
+}
+
+#logo {
+    max-height: 60px;
+}
+
 .site-footer {
     background-color: #dddddd;
     border-top: 4px #cdcdcd solid;
@@ -44,4 +89,27 @@
 
 #comment-row {
     margin: 0;
+}
+
+#spotify-results {
+    padding:0;
+}
+
+#spotify-results div{
+    border-bottom: 1px #efefef solid;
+}
+.result-head {
+    margin: 0;
+}
+.result-img {
+    width: inherit;
+}
+
+textarea {
+    resize: none;
+}
+
+.result {
+    text-decoration: none;
+    color: inherit;
 }
