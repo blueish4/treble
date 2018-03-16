@@ -129,8 +129,6 @@ def song(request, song_id):
     if int(song_id) < 1:
         return HttpResponseRedirect(reverse('index'))
     context_dict = {}
-    if request.user.is_authenticated():
-        context_dict['form'] = CommentForm(request.POST, user=request.user, song_id=song_id)
 
     try:
         song_obj = Song.objects.get(song_id=song_id)
@@ -138,6 +136,18 @@ def song(request, song_id):
         context_dict['song'] = song_obj
         context_dict['recommended'] = song_obj.recommended_songs.all()
         context_dict['comments'] = comments
+
+        # If a user has already reviewed a song they should only be able to edit the review
+        # they shouldn't be able to leave another review.
+        already_commented = False
+        for comment in comments:
+            if comment.username.id == request.user.id:
+                already_commented = True
+                break
+
+        if request.user.is_authenticated() and not already_commented:
+            context_dict['form'] = CommentForm(request.POST, user=request.user, song_id=song_id)
+
     except Song.DoesNotExist:
         context_dict['song'] = None
     return render(request, 'treble/song.html', context_dict)
@@ -167,7 +177,6 @@ def add_song_comment(request, song_id):
     data_copy["song_id"] = str(song_id)
     data_copy["username"] = str(request.user.id)
     data_copy["datetime"] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    print(data_copy["datetime"])
     form.data = data_copy
     if form.is_valid():
         form.save(commit=True)
