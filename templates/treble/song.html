@@ -34,7 +34,7 @@
     </div>
     <div id="reviews">
         <h3>Reviews</h3>
-        <div class="row" id="comment-row">
+        <div id="comment-row">
             {% if user.is_authenticated %}
                 {% if comment_errors %}
                     <div class="alert alert-danger" role="alert">
@@ -44,9 +44,9 @@
                 <form action="{% url 'song_comment' song.song_id %}" method="post" id="comment-form">
                     {% csrf_token %}
                     {% for field in form %}
-                        {% if field.name == "message" %}
-                        <div class="row">
-                            <label for="{{ field.id_for_label }}" class="col-3">Comment</label>
+                        {% if not field.is_hidden %}
+                        <div class="row form-group">
+                            <label for="{{ field.id_for_label }}" class="col-sm-3 col-form-label">{{ field.label }}</label>
                             {{ field }}
                         </div>
                         {% else %}
@@ -64,14 +64,14 @@
             {% for review in comments %}
                 <div class="col-md-6">
                     <b>Review from {{ review.username }}</b><br>
-                    <b>Reaction:</b>{{ review.reaction }}
-                    <p>{{ review.message }}</p>
+                    <b>Reaction:</b>{{ review.get_reaction_display }}<br>
+                    <p class="comment-message">{{ review.message }}</p>
+                    <p class="comment-date">{{ review.datetime|date:"d M Y" }}</p>
                 </div>
             {% endfor %}
         {% else %}
             <p>There are no reviews for this track. Why not add one?</p>
         {% endif %}
-
         </div>
     </div>
 {% endblock %}

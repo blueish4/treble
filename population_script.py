@@ -62,27 +62,32 @@ def populate():
         {"comment_id": 1,
          "song_id": 1,
          "username": "Sir Ri",
-         "message": "This is a very good song."},
+         "message": "This is a very good song.",
+         "reaction": 2},
 
         {"comment_id": 2,
          "song_id": 1,
          "username": "Alexa",
-         "message": "I love this song!"},
+         "message": "I love this song!",
+         "reaction": 1},
 
         {"comment_id": 3,
          "song_id": 2,
          "username": "Sir Ri",
-         "message": "This song is amazing!"},
+         "message": "This song is amazing!",
+         "reaction": 3},
 
         {"comment_id": 4,
          "song_id": 4,
          "username": "Bob",
-         "message": "Kendrick is GOAT."},
+         "message": "Kendrick is GOAT.",
+         "reaction": 4},
 
         {"comment_id": 5,
          "song_id": 5,
          "username": "Bob",
-         "message": "Meh, it's okay I guess"}
+         "message": "Meh, it's okay I guess",
+         "reaction": 5}
     ]
 
     # List of dictionaries containing Users
@@ -123,7 +128,7 @@ def populate():
         new_comment = comments[j]
         song = Song.objects.get(song_id=new_comment['song_id'])
         c = add_comment(song, new_comment['comment_id'],
-                        new_comment['username'], new_comment['message'])
+                        new_comment['username'], new_comment['message'], new_comment['reaction'])
 
         song.comments.add(c)
         user = UserProfile.objects.get(
@@ -176,6 +181,7 @@ def populate():
         print("Track Name: " + str(s))
         for c in Comment.objects.filter(song_id=s):
             print("     --" + str(c))
+            print("         -Reaction: " + str(c.reaction))
             print("         -" + str(c.username.user.username))
             print("         -" + str(c.datetime))
         print("")
@@ -214,7 +220,7 @@ def add_recommendation(add_to, recommendation):
     return True
 
 
-def add_comment(song_id, comment_id, username, message):
+def add_comment(song_id, comment_id, username, message, reaction):
     c = Comment.objects.get_or_create(
         song_id=song_id, comment_id=comment_id)[0]
     c.song_id = song_id
@@ -222,6 +228,7 @@ def add_comment(song_id, comment_id, username, message):
     u = UserProfile.objects.get(username_slug=slug_username)
     c.username = u
     c.message = message
+    c.reaction = reaction
     c.save()
     return c
 

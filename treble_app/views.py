@@ -1,12 +1,16 @@
-from datetime import datetime
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
+from django.core import serializers
 from django.core.urlresolvers import reverse
 from treble_app.forms import UserForm, UserProfileForm, SongForm, CommentForm, RecommendationForm
 from treble_app.models import Song, Comment, UserProfile
+from treble_app.spotify_search import search_spotify
+from json import loads
+
+import json
 
 
 def index(request):
@@ -106,8 +110,7 @@ def register(request):
 
 @login_required  # Can only view other profiles if user is logged in
 def user_profile(request, username_slug):
-    user = UserProfile.objects.get(username_slug=username_slug)
-    return render(request, 'treble/user_profile.html', {'user': user})
+    return render(request, 'treble/user_profile.html',{})
 
 
 @login_required
@@ -142,27 +145,31 @@ def song(request, song_id):
 def add_song(request):
     form = SongForm(request.POST)
     if form.is_valid():
-        form.save(commit=True)
-        # Redirect to homepage **FOR NOW**
-        return HttpResponseRedirect(reverse('index'))
+        saved = form.save(commit=True)
+        song_id = Song.objects.get(spotify_uri=saved.spotify_uri, track_name=saved.track_name).song_id
+        return HttpResponse("{\"success\": "+str(song_id)+"}")
     else:
         print(form.errors)
-
-    return render(request, 'treble/add_song.html', {'form': form})
+        return HttpResponse(form.errors)
 
 
 @login_required
-def add_song_comment(request, song_id):  # This needs to be the POST endpoint for the add operation
+def add_song_comment(request, song_id):
     # If the user isn't logged in, deny request
     if not request.user.is_authenticated():
         return HttpResponseRedirect(reverse('song', kwargs={"song_id": song_id}))
 
     form = CommentForm(request.POST, user=request.user, song_id=song_id)
+    # Set the username and song id on the server side
+    data_copy = form.data.copy()
+    data_copy["song_id"] = str(song_id)
+    data_copy["username"] = str(request.user.id)
+    form.data = data_copy
     if form.is_valid():
-        form.cleaned_data["username"] = UserProfile.objects.get(user_id=request.user.id)
-        form.cleaned_data["song_id"] = Song.objects.get(song_id=song_id)
         form.save(commit=True)
     else:
+        # TODO display errors somehow.
+        # This might become easier if the form becomes an AJAX one, since it can be is the response body
         print(form.errors)
     return HttpResponseRedirect(reverse('song', kwargs={"song_id": song_id}))
 
@@ -180,6 +187,15 @@ def add_song_recommendation(request, song_id):
     return render(request, 'treble/add_recommendation.html', {'form': form})
 
 
+def spotify_lookup(request):
+    return JsonResponse(search_spotify(request.GET.get("track")))
+
+
+def search(request, search_term):
+    return render(request, 'treble/search.html', context={"term": search_term,
+                                                          "add_song_form": SongForm(request.POST)})
+
+
 def about(request):
     return render(request, 'treble/about.html', {})
 
@@ -195,3 +211,38 @@ def faq(request):
 def user_logout(request):
     logout(request)
     return HttpResponseRedirect(reverse('index'))
+
+def navbar_search(request):
+    search_term = request.GET.get('search_term', None)
+
+    JSONSerializer = serializers.get_serializer("json")
+    json_serializer = JSONSerializer()
+
+    return_dict = []
+
+    track_match = Song.objects.filter(track_name__contains=search_term)
+    if track_match.exists():
+
+        json_serializer.serialize(track_match)
+        data = json.loads(json_serializer.getvalue())
+
+        info = []
+        for track in data:
+            info.append({'track_name': track['fields']['track_name'], 'artist': track['fields']['artist'], "song_id": track['pk']})
+
+        return_dict.append({"label": info, "category": "Song", "logged_in": True})
+
+    if request.user.is_authenticated():
+        user_match = User.objects.filter(username__contains=search_term)
+        if user_match.exists():
+
+            json_serializer.serialize(user_match)
+            data2 = json.loads(json_serializer.getvalue())
+            profile = UserProfile.objects.get(user=user_match)
+
+            info = [{"username": data2[0]['fields']['username'], "username_slug": profile.username_slug}]
+            return_dict.append({"label": info, "category": "User", "logged_in": True })
+    else:
+        return_dict.append({"label": "You need to be logged in<br>to view users", "category": "User", "logged_in":False})
+
+    return JsonResponse(return_dict, content_type="application/json", safe=False)
