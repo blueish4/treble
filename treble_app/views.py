@@ -203,7 +203,7 @@ def add_song_recommendation(request, song_id):
 
 
 def spotify_lookup(request):
-    return JsonResponse(search_spotify(request.GET.get("track")))
+    return JsonResponse(search_spotify(request.GET.get("track"), "track"))
 
 
 def search(request, search_term):
