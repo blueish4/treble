@@ -6,5 +6,70 @@
 {% endblock %}
 
 {% block body_block %}
-<!-- Account goes here -->
+<div >
+    <div class="row justify-content-md-left">
+        <img class = "col-md-auto" id="picture" src="{{ MEDIA_URL}}/profile_images/siri.png"/>
+        <h1 class = "col col-lg-2">{{ user }}</h1>
+    </div>
+    <div id="recommended" class="row-1">
+        <h1>Recommended for you</h1>
+        <div>
+          <ul class="link-container">
+            {% for fav_song in user.favourites.all %}
+              {% for rec_song in fav_song.recommended_songs.all %}
+                  <li class="song-link">
+                      <a href="{% url 'song' rec_song.song_id %}">
+                          <img src="{{ rec_song.artwork_url }}"/>
+                          <div class="song-title">
+                              <p>{{ rec_song.track_name }}</p>
+                          </div>
+                      </a>
+                      <div>
+                          Since you like: <br /> {{ fav_song.track_name }}
+                      </div>
+                  </li>
+              {% endfor %}
+            {% endfor %}
+          </ul>
+        </div>
+    </div>
+    <div id="favourites" class="row-3">
+      <div>
+        <h1>My Favourites</h1>
+        <div>
+          <ul class="link-container">
+            {% for song in user.favourites.all %}
+                <li class="song-link">
+                    <a href="{% url 'song' song.song_id %}">
+                        <img src="{{ song.artwork_url }}"/>
+                        <div class="song-title">
+                            <p>{{ song.track_name }}</p>
+                        </div>
+                    </a>
+                </li>
+            {% endfor %}
+              <li>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-add-modal-lg">Add song</button>
+                {% include 'includes/add_song.html' %}
+              </li>
+          </ul>
+        </div>
+    </div>
+    <div id="reviews" class="row-4">
+        <h1>My Reviews</h1>
+        <div>
+          <ul class="row">
+            {% if user.comments.count > 0 %}
+                {% for comment in user.comments.all %}
+                    <div class="col-md-6">
+                        <b>Song name: {{ comment.song_id }}</b><br>
+                        <b>Reaction:</b>{{ comment.get_reaction_display }}
+                        <p>{{ comment.message }}</p>
+                    </div>
+                {% endfor %}
+            {% endif %}
+          </ul>
+        </div>
+    </div>
+</div>
 {% endblock %}

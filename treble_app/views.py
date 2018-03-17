@@ -112,7 +112,8 @@ def register(request):
 
 @login_required  # Can only view other profiles if user is logged in
 def user_profile(request, username_slug):
-    return render(request, 'treble/user_profile.html',{})
+    user = UserProfile.objects.get(username_slug=username_slug)
+    return render(request, 'treble/user_profile.html', {'user': user})
 
 
 @login_required
