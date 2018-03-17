@@ -139,17 +139,22 @@ def song(request, song_id):
 
         # If a user has already reviewed a song they should only be able to edit the review
         # they shouldn't be able to leave another review.
-        already_commented = False
+        prev_comment_id = -1
         for comment in comments:
             if comment.username.id == request.user.id:
-                already_commented = True
+                prev_comment_id = comment.username.id
                 break
 
-        if request.user.is_authenticated() and not already_commented:
-            context_dict['form'] = CommentForm(request.POST, user=request.user, song_id=song_id)
+        if request.user.is_authenticated(): # and not already_commented:
+            if prev_comment_id == -1:
+                context_dict['form'] = CommentForm(user=request.user, song_id=song_id)
+            else:
+                comment = Comment.objects.get(comment_id=prev_comment_id)
+                context_dict['form'] = CommentForm(user=request.user, song_id=song_id, instance=comment)
 
     except Song.DoesNotExist:
         context_dict['song'] = None
+
     return render(request, 'treble/song.html', context_dict)
 
 
