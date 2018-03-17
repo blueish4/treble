@@ -14,7 +14,7 @@ $(function() {
     },
     _renderItemUserNotLoggedIn: function(ul, label){
         var newHtml = "<div class='ui-menu-item-wrapper'><div class='search-menu-not-logged-in'>" + label + "</div></div>";
-        return $("<li>").data("ui-autocomplete-item",{"link":"{% url 'login' %}"}).append(newHtml).appendTo(ul);
+        return $("<li>").data("ui-autocomplete-item",{"link":"{% url 'auth_login' %}"}).append(newHtml).appendTo(ul);
     },
     _renderMenu: function(ul, items) {
         var that = this;

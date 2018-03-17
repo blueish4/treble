@@ -35,7 +35,7 @@
     <div id="reviews">
         <h3>Reviews</h3>
         <div id="comment-row">
-            {% if user.is_authenticated %}
+            {% if user.is_authenticated and form %}
                 {% if comment_errors %}
                     <div class="alert alert-danger" role="alert">
                         {{ comment_errors }}
@@ -55,17 +55,22 @@
                     {% endfor %}
                     <input type="submit" name="submit" value="Comment"/>
                 </form>
-            {% else %}
-                <p>You need to be logged in to add a comment</p>
+            {% elif not user.is_authenticated %}
+                <p><a href="{% url 'auth_login' %}">Log in</a> to add a review</p>
             {% endif %}
         </div>
         <div class="row">
         {% if comments.count > 0 %}
             {% for review in comments %}
                 <div class="col-md-6">
-                    <b>Review from {{ review.username }}</b><br>
-                    <b>Reaction:</b>{{ review.get_reaction_display }}
-                    <p>{{ review.message }}</p>
+                    {% if review.username.id == user.id %}
+                        <b>Review by you | </b><a href="#">edit</a><br>
+                    {% else %}
+                        <b>Review by {{ review.username }}</b><br>
+                    {% endif %}
+                    <b>Reaction:</b>{{ review.get_reaction_display }}<br>
+                    <p class="comment-message">{{ review.message }}</p>
+                    <p class="comment-date">{{ review.datetime|date:"H.i | j M Y" }}</p>
                 </div>
             {% endfor %}
         {% else %}
