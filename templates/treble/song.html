@@ -35,7 +35,7 @@
     <div id="reviews">
         <h3>Reviews</h3>
         <div id="comment-row">
-            {% if user.is_authenticated and form %}
+                {% if user.is_authenticated and form %}
                 {% if comment_errors %}
                     <div class="alert alert-danger" role="alert">
                         {{ comment_errors }}
@@ -64,12 +64,12 @@
             {% for review in comments %}
                 <div class="col-md-6">
                     {% if review.username.id == user.id %}
-                        <b>Review by you | </b><a href="#">edit</a><br>
+                        <b>Review by you | </b><a id="edit-comment" href="#reviews">edit</a><br>
                     {% else %}
                         <b>Review by {{ review.username }}</b><br>
                     {% endif %}
                     <b>Reaction:</b>{{ review.get_reaction_display }}<br>
-                    <p class="comment-message">{{ review.message }}</p>
+                    <p class="comment-message">{{ review.message }}</p><br>
                     <p class="comment-date">{{ review.datetime|date:"H.i | j M Y" }}</p>
                 </div>
             {% endfor %}
