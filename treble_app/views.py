@@ -119,7 +119,8 @@ def user_profile(request, username_slug):
 @login_required
 def user_account(request):
     user = request.user
-    return render(request, 'treble/user_account.html', {'user': user})
+    user_profile = UserProfile.objects.get(user=user)
+    return render(request, 'treble/user_account.html', {'user': user, 'user_profile': user_profile})
 
 
 def password_change(request):

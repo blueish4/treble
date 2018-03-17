@@ -15,7 +15,7 @@
         <h1>Recommended for you</h1>
         <div>
           <ul class="link-container">
-            {% for fav_song in user.favourites.all %}
+            {% for fav_song in user_profile.favourites.all %}
               {% for rec_song in fav_song.recommended_songs.all %}
                   <li class="song-link">
                       <a href="{% url 'song' rec_song.song_id %}">
@@ -38,7 +38,7 @@
         <h1>My Favourites</h1>
         <div>
           <ul class="link-container">
-            {% for song in user.favourites.all %}
+            {% for song in user_profile.favourites.all %}
                 <li class="song-link">
                     <a href="{% url 'song' song.song_id %}">
                         <img src="{{ song.artwork_url }}"/>
