@@ -10,6 +10,8 @@ from treble_app.models import Song, Comment, UserProfile
 from treble_app.spotify_search import search_spotify
 from json import loads
 
+import datetime
+
 import json
 
 
@@ -39,58 +41,73 @@ def user_login(request):
                 return HttpResponseRedirect(reverse('index'))
             else:
                 message = "Your Treble account is disabled."
-                return render(request, 'treble/login.html', {'message': message})
+                return render(request, 'registration/login.html', {'message': message})
         else:
             print("Invalid login details: "+username+" , "+password)
             message = "Invalid login details supplied."
-            return render(request, 'treble/login.html', {'message': message})
+            return render(request, 'registration/login.html', {'message': message})
     else:
         message = ''
-        return render(request, 'treble/login.html', {'message': message})
+        return render(request, 'registration/login.html', {'message': message})
 
 
 def register(request):
-    # True if registration was successful
+    # a boolean value for telling te template
+    # whether the registration was successful
+    # set to false initially. code changes value to
+    # true when registration succeeds
     registered = False
-    if request.user.is_authenticated():
-        return HttpResponseRedirect(reverse('index'))
 
-    if request.method == 'POST' and not request.user.is_authenticated():
+    # If its a HTTP POST, we're interested in processing form data.
+    if request.method == 'POST':
+        # attempt to grab information from raw form information.
+        # Note that we make use of both UserForm and UserProfileForm.
         user_form = UserForm(data=request.POST)
         profile_form = UserProfileForm(data=request.POST)
 
+        # if the two forms are valid...
         if user_form.is_valid() and profile_form.is_valid():
+            # Save the user's form data to the database.
             user = user_form.save()
 
-            # Hash password and update user object
+            # Now we hash the password with the set_password method.
+            # Once hashed, we can update the user object.
+
             user.set_password(user.password)
             user.save()
-
-            # commit=False delays saving model, as user attributes must still be set
+            # now sort out the UserProfile instance.
+            # Since we need to set the user attribute ourselves,
+            # we set commit=False. This delays saving the model
+            # until we're ready to avoid integrity problems.
             profile = profile_form.save(commit=False)
             profile.user = user
 
-            # Profile pic. supplied?
+            # Did the user provide a profile picture?
+            # If so , we need to get it from the input form and
+            # put it in the UserProfile model.
             if 'picture' in request.FILES:
                 profile.picture = request.FILES['picture']
-
+            # now we save the UserProfile model instance
             profile.save()
 
-            # Template registration was successful
+            # update our variable to indicate that the template
+            # registration was successful
             registered = True
-
         else:
-            # Invalid form / mistakes
+            # invalid form or forms - mistakes or something else?
+            # print problems to the terminal.
             print(user_form.errors, profile_form.errors)
-
     else:
-        # Not HTTP POST so render blank form
+        # not a HTTP POST, so we render our form using two ModelForm instances.
+        # These forms will be blank, ready for user input.
         user_form = UserForm()
         profile_form = UserProfileForm()
-
-    return render(request, 'treble/register.html', {'user_form': user_form,
-                                                    'profile_form': profile_form,
-                                                    'registered': registered})
+    # render the template depending on the context.
+    return render(request,
+                  'registration/registration_form.html',
+                  {'user_form': user_form,
+                   'profile_form': profile_form,
+                   'registered': registered})
 
 
 @login_required  # Can only view other profiles if user is logged in
@@ -101,15 +118,18 @@ def user_profile(request, username_slug):
 
 @login_required
 def user_account(request):
-    user = UserProfile.objects.get(user_id=request.user.id)
+    user = request.user
     return render(request, 'treble/user_account.html', {'user': user})
+
+
+def password_change(request):
+    return render(request, 'registration/password_change_form.html', {})
+
 
 def song(request, song_id):
     if int(song_id) < 1:
         return HttpResponseRedirect(reverse('index'))
     context_dict = {}
-    if request.user.is_authenticated():
-        context_dict['form'] = CommentForm(request.POST, user=request.user, song_id=song_id)
 
     try:
         song_obj = Song.objects.get(song_id=song_id)
@@ -117,6 +137,18 @@ def song(request, song_id):
         context_dict['song'] = song_obj
         context_dict['recommended'] = song_obj.recommended_songs.all()
         context_dict['comments'] = comments
+
+        # If a user has already reviewed a song they should only be able to edit the review
+        # they shouldn't be able to leave another review.
+        already_commented = False
+        for comment in comments:
+            if comment.username.id == request.user.id:
+                already_commented = True
+                break
+
+        if request.user.is_authenticated() and not already_commented:
+            context_dict['form'] = CommentForm(request.POST, user=request.user, song_id=song_id)
+
     except Song.DoesNotExist:
         context_dict['song'] = None
     return render(request, 'treble/song.html', context_dict)
@@ -145,6 +177,7 @@ def add_song_comment(request, song_id):
     data_copy = form.data.copy()
     data_copy["song_id"] = str(song_id)
     data_copy["username"] = str(request.user.id)
+    data_copy["datetime"] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     form.data = data_copy
     if form.is_valid():
         form.save(commit=True)

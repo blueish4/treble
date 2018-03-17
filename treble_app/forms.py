@@ -1,6 +1,8 @@
 from django import forms
 from treble_app.models import Song, Comment, UserProfile
 from django.contrib.auth.models import User
+import datetime
+from django.utils import timezone
 
 
 class SongForm(forms.ModelForm):
@@ -31,7 +33,7 @@ class CommentForm(forms.ModelForm):
 
     class Meta:
         model = Comment
-        exclude = ('comment_id', 'datetime')
+        exclude = ('comment_id', )#'datetime')
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', '')
@@ -44,6 +46,7 @@ class CommentForm(forms.ModelForm):
         self.fields['song_id'] = forms.ModelChoiceField(
             queryset=Song.objects.filter(song_id=song_id), initial=Song.objects.none(),
             widget=forms.HiddenInput)
+        self.fields['datetime'] = forms.DateTimeField(initial=datetime.datetime.today, widget=forms.HiddenInput)
 
 
 class RecommendationForm(forms.Form):

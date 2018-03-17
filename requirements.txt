@@ -1,5 +1,5 @@
-django==1.11.7
 pillow
 bcrypt
-django-registration-redux==1.4
+django-registration-redux==2.2
 requests
+django==1.11.7

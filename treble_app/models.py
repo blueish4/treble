@@ -3,6 +3,7 @@
 
 from django.db import models
 from django.utils import timezone
+import datetime
 import pytz
 from django.template.defaultfilters import slugify
 from django.contrib.auth.models import User
@@ -52,7 +53,7 @@ class Comment(models.Model):
     song_id = models.ForeignKey('Song', default=0)
     username = models.ForeignKey(UserProfile, default=1)
     message = models.CharField(max_length=256)
-    datetime = models.DateTimeField(default=timezone.now, blank=True)
+    datetime = models.DateTimeField(default=datetime.datetime.now(), blank=False)
 
     # Reactions are between 0 and 5 where:
     #           0:     Smile Emoji (Default)
