@@ -45,7 +45,7 @@ body {
 }
 
 .navbar-brand {
-    padding: 0px;
+    padding: 0;
 }
 
 #logo {
@@ -60,6 +60,10 @@ body {
 
 .pad-top-1 {
     padding-top: 1rem;
+}
+
+.left-pad {
+    padding-left: 2rem;
 }
 
 .link-container {

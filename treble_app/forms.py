@@ -50,8 +50,24 @@ class CommentForm(forms.ModelForm):
 
 
 class RecommendationForm(forms.Form):
-    # TODO populate queryset parameter with all songs matching a search performed by the user
-    recommended_songs = forms.ModelMultipleChoiceField(queryset=Song, widget=forms.CheckboxSelectMultiple())
+
+    class Meta:
+        model = Song
+        fields = ('recommended_songs', 'song_id')
+
+    def __init__(self, *args, **kwargs):
+        song = kwargs.pop('song_id', '')
+        super(RecommendationForm, self).__init__(*args, **kwargs)
+        # All songs that are:
+        # 1. Not self
+        # 2. Not already recommended.
+        self.fields['recommended_songs'] = forms.ModelMultipleChoiceField(
+            queryset=Song.objects.exclude(
+                song_id__in=Song.objects.get(song_id=song).recommended_songs.all().values_list('song_id')
+                                        .union(Song.objects.filter(song_id=song).values_list('song_id'))),
+            widget=forms.CheckboxSelectMultiple())
+        self.fields['song_id'] = forms.IntegerField(widget=forms.HiddenInput, initial=song)
+
 
 class UserForm(forms.ModelForm):
     username = forms.CharField(widget=forms.TextInput(attrs={"class": "col-sm-6", "required": "required"}))
