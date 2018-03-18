@@ -62,8 +62,11 @@
             {% if user_profile.comments.count > 0 %}
               {% for review in user_profile.comments.all %}
                   <div class="col-md-6">
-                      <b>{{ review.song_id.track_name }}</b><br>
-                      <b>by {{ review.song_id.artist }}</b><br/><br />
+                    <div>
+                      <img src={{ review.song_id.artwork_url }} />
+                        <b>{{ review.song_id.track_name }}</b>
+                        <b>by {{ review.song_id.artist }}</b><br/><br />
+                    </div>
                       <b>Reaction: </b>{{ review.get_reaction_display }}<br>
                       <p class="comment-message">{{ review.message }}</p>
                       <p class="comment-date">{{ review.datetime|date:"H:i | j M Y" }}</p>
