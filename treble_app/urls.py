@@ -18,6 +18,7 @@ urlpatterns = [
     url(r'^user/my-account$', views.user_account, name='user_account'),
     url(r'^song/(?P<song_id>[\w\-]+)/$', views.song, name='song'),
     url(r'^song/(?P<song_id>[\d]+)/comment/$', views.add_song_comment, name='song_comment'),
+    url(r'^song/(?P<song_id>[\d]+)(?P<comment_id>[\d]+)/edit-comment/$',views.edit_song_comment, name='edit_comment'),
     url(r'^song/(?P<song_id>[\d]+)/add-recommendation/$', views.add_song_recommendation, name='song_recommendation'),
     url(r'^about-us/$', views.about, name='about'),
     url(r'^contact-us/$', views.contact, name='contact'),
