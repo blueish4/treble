@@ -66,6 +66,7 @@ $(function(){
     });
     $("#add-song-modal").on("show.bs.modal", function(){
         search_box.val(search_term);
+        $(".result").remove();
         spotify_update();
     });
     $("#add-song-form").on("submit", function(e){
@@ -76,7 +77,6 @@ $(function(){
             var input = $(inputs[a]);
             data[input.attr("name")] =  input.val();
         });
-        console.log(inputs);
         $.ajax({
             url: add_endpoint,
             data: data,
@@ -84,12 +84,12 @@ $(function(){
             dataType: "json"
         }).done(function(data){
             if(data.success){
-                window.location.href = song_url_stub.replace("0", data.success);
+                // Somewhat of a hack here. I'd rather have a callback, but not sure how to
                 $("#add-song-modal").modal("hide");
+                add_song_callback(data);
             } else {
 
             }
-            alert("SAVED");
         })
     })
 });
