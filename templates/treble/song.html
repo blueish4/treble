@@ -41,7 +41,11 @@
                         {{ comment_errors }}
                     </div>
                 {% endif %}
-                <form action="{% url 'song_comment' song.song_id %}" method="post" id="comment-form">
+                {% if edit %}
+                    <form action="{% url 'edit_comment' song.song_id prev_comment_id %}" method="post" id="comment-form">
+                {% else %}
+                    <form action="{% url 'song_comment' song.song_id %}" method="post" id="comment-form">
+                {% endif %}
                     {% csrf_token %}
                     {% for field in form %}
                         {% if not field.is_hidden %}
@@ -53,7 +57,11 @@
                             {{ field }}
                         {% endif %}
                     {% endfor %}
-                    <input type="submit" name="submit" value="Comment"/>
+                    {% if edit %}
+                        <input type="submit" name="submit" value="Update Review"/>
+                    {% else %}
+                        <input type="submit" name="submit" value="Submit Review"/>
+                    {% endif %}
                 </form>
             {% elif not user.is_authenticated %}
                 <p><a href="{% url 'auth_login' %}">Log in</a> to add a review</p>
