@@ -18,7 +18,16 @@
         </div>
     </div>
     <div id="similar-to">
-        <h3>Similar to</h3>
+        <div class="row">
+            <h3>Similar to</h3>
+            {% if user.is_authenticated %}
+                <div class="left-pad">
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-rec-modal-lg">
+                        + Add
+                    </button>
+                </div>
+            {% endif %}
+        </div>
         <ul class="link-container">
             {% for song in recommended %}
                 <li class="song-link">
@@ -86,4 +95,35 @@
         {% endif %}
         </div>
     </div>
+    {% if user.is_authenticated %}
+    <div id="add-rec-modal" class="modal fade bd-rec-modal-lg" tabindex="-1" role="dialog" aria-labelledby="add-rec-modal-label" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 id="add-song-modal-label">Add Recommendation</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                <form id="add-rec-form" action="{% url 'song_recommendation' song_id=song.song_id%}" method="post">
+                {% csrf_token %}
+                    {% for field in recommend_form %}
+                    {{ field }}
+                    {% endfor %}
+                </form>
+                <button type="button" id="add_song" class="btn btn-primary" data-toggle="modal" >Add song</button>
+                </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" type="submit" form="add-rec-form">Add</button>
+            </div>
+            </div>
+        </div>
+    </div>
+        {% include 'includes/add_song.html' %}
+    {% endif %}
+{% endblock %}
+{% block additional_js %}
+    {% include "includes/search_js_stub.html" %}
+<script src="{% static 'dynamic_add_song.js' %}"></script>
 {% endblock %}

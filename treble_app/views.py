@@ -147,7 +147,8 @@ def song(request, song_id):
                 prev_comment_id = comment.comment_id
                 break
 
-        if request.user.is_authenticated(): # and not already_commented:
+
+        if request.user.is_authenticated():
             if prev_comment_id == -1:
                 context_dict['form'] = CommentForm(user=request.user, song_id=song_id)
                 context_dict['edit'] = False
@@ -158,8 +159,9 @@ def song(request, song_id):
                 context_dict['prev_comment_id'] = prev_comment_id
 
     except Song.DoesNotExist:
+        # TODO Redirect to a 404 page instead
         context_dict['song'] = None
-
+    context_dict['recommend_form'] = RecommendationForm(request.POST, song_id=song_id)
     return render(request, 'treble/song.html', context_dict)
 
 
@@ -169,7 +171,10 @@ def add_song(request):
     if form.is_valid():
         saved = form.save(commit=True)
         song_id = Song.objects.get(spotify_uri=saved.spotify_uri, track_name=saved.track_name).song_id
-        return HttpResponse("{\"success\": "+str(song_id)+"}")
+        response = {"success": True,
+                    "song_id": song_id,
+                    "song_name": saved.track_name}
+        return JsonResponse(response)
     else:
         print(form.errors)
         return HttpResponse(form.errors)
@@ -223,12 +228,17 @@ def edit_song_comment(request, song_id, comment_id):
 
 @login_required
 def add_song_recommendation(request, song_id):
-    form = RecommendationForm(request.POST)
+    form = RecommendationForm(request.POST, song_id=song_id)
+    data_copy = form.data.copy()
+    data_copy['song_id'] = song_id
+    form.data = data_copy
     if form.is_valid():
-        form.save(commit=True)
-        # Redirect to homepage **FOR NOW**
-        return HttpResponseRedirect(reverse('index'))
+        song = Song.objects.get(song_id=song_id)
+        for target in form.cleaned_data['recommended_songs']:
+            song.recommended_songs.add(target)
+        return HttpResponseRedirect(reverse('song', kwargs={"song_id": song_id}))
     else:
+        # TODO RETURN JSON, esp. on errors
         print(form.errors)
 
     return render(request, 'treble/add_recommendation.html', {'form': form})
