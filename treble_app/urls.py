@@ -15,6 +15,7 @@ urlpatterns = [
     url(r'^user/(?P<username_slug>[\w\-]+)/$',
         views.user_profile, name='user_profile'),
     url(r'^user/my-account$', views.user_account, name='user_account'),
+    url(r'^user/my-account/add-favourite/$', views.add_favourite, name='add_favourite'),
     url(r'^song/(?P<song_id>[\w\-]+)/$', views.song, name='song'),
     url(r'^song/(?P<song_id>[\d]+)/comment/$', views.add_song_comment, name='song_comment'),
     url(r'^song/(?P<song_id>[\d]+)(?P<comment_id>[\d]+)/edit-comment/$',views.edit_song_comment, name='edit_comment'),
