@@ -141,21 +141,26 @@ def song(request, song_id):
 
         # If a user has already reviewed a song they should only be able to edit the review
         # they shouldn't be able to leave another review.
-        already_commented = False
+        prev_comment_id = -1
         for comment in comments:
             if comment.username.id == request.user.id:
-                already_commented = True
+                prev_comment_id = comment.comment_id
                 break
 
+
         if request.user.is_authenticated():
-            if not already_commented:
-                context_dict['form'] = CommentForm(request.POST, user=request.user, song_id=song_id)
-            context_dict['add_song_form'] = SongForm(request.POST)
+            if prev_comment_id == -1:
+                context_dict['form'] = CommentForm(user=request.user, song_id=song_id)
+                context_dict['edit'] = False
+            else:
+                comment = Comment.objects.get(comment_id=prev_comment_id)
+                context_dict['form'] = CommentForm(user=request.user, song_id=song_id, instance=comment)
+                context_dict['edit'] = True
+                context_dict['prev_comment_id'] = prev_comment_id
 
     except Song.DoesNotExist:
         # TODO Redirect to a 404 page instead
         context_dict['song'] = None
-
     context_dict['recommend_form'] = RecommendationForm(request.POST, song_id=song_id)
     return render(request, 'treble/song.html', context_dict)
 
@@ -182,6 +187,30 @@ def add_song_comment(request, song_id):
         return HttpResponseRedirect(reverse('song', kwargs={"song_id": song_id}))
 
     form = CommentForm(request.POST, user=request.user, song_id=song_id)
+    # Set the username and song id on the server side
+    data_copy = form.data.copy()
+    data_copy["song_id"] = str(song_id)
+    data_copy["username"] = str(request.user.id)
+    data_copy["datetime"] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    form.data = data_copy
+    if form.is_valid():
+        form.save(commit=True)
+    else:
+        # TODO display errors somehow.
+        # This might become easier if the form becomes an AJAX one, since it can be is the response body
+        print(form.errors)
+    return HttpResponseRedirect(reverse('song', kwargs={"song_id": song_id}))
+
+
+@login_required
+def edit_song_comment(request, song_id, comment_id):
+    # If the user isn't logged in, deny request
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect(reverse('song', kwargs={"song_id": song_id}))
+
+    comment = Comment.objects.get(comment_id=comment_id)
+    print(comment.comment_id,comment.message)
+    form = CommentForm(request.POST, user=request.user, song_id=song_id, instance=comment)
     # Set the username and song id on the server side
     data_copy = form.data.copy()
     data_copy["song_id"] = str(song_id)

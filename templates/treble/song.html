@@ -44,13 +44,17 @@
     <div id="reviews">
         <h3>Reviews</h3>
         <div id="comment-row">
-            {% if user.is_authenticated and form %}
+                {% if user.is_authenticated and form %}
                 {% if comment_errors %}
                     <div class="alert alert-danger" role="alert">
                         {{ comment_errors }}
                     </div>
                 {% endif %}
-                <form action="{% url 'song_comment' song.song_id %}" method="post" id="comment-form">
+                {% if edit %}
+                    <form action="{% url 'edit_comment' song.song_id prev_comment_id %}" method="post" id="comment-form">
+                {% else %}
+                    <form action="{% url 'song_comment' song.song_id %}" method="post" id="comment-form">
+                {% endif %}
                     {% csrf_token %}
                     {% for field in form %}
                         {% if not field.is_hidden %}
@@ -62,7 +66,11 @@
                             {{ field }}
                         {% endif %}
                     {% endfor %}
-                    <input type="submit" name="submit" value="Comment"/>
+                    {% if edit %}
+                        <input type="submit" name="submit" value="Update Review"/>
+                    {% else %}
+                        <input type="submit" name="submit" value="Submit Review"/>
+                    {% endif %}
                 </form>
             {% elif not user.is_authenticated %}
                 <p><a href="{% url 'auth_login' %}">Log in</a> to add a review</p>
@@ -73,13 +81,13 @@
             {% for review in comments %}
                 <div class="col-md-6">
                     {% if review.username.id == user.id %}
-                        <b>Review by you | </b><a href="#">edit</a><br>
+                        <b>Review by you | </b><a id="edit-comment" href="#reviews">edit</a><br>
                     {% else %}
                         <b>Review by {{ review.username }}</b><br>
                     {% endif %}
                     <b>Reaction:</b>{{ review.get_reaction_display }}<br>
-                    <p class="comment-message">{{ review.message }}</p>
-                    <p class="comment-date">{{ review.datetime|date:"H:i | j M Y" }}</p>
+                    <p class="comment-message">{{ review.message }}</p><br>
+                    <p class="comment-date">{{ review.datetime|date:"H.i | j M Y" }}</p>
                 </div>
             {% endfor %}
         {% else %}
