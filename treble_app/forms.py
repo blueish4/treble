@@ -69,6 +69,24 @@ class RecommendationForm(forms.Form):
         self.fields['song_id'] = forms.IntegerField(widget=forms.HiddenInput, initial=song)
 
 
+class FavouriteForm(forms.Form):
+    class Meta:
+        model = UserProfile
+        fields = ('favourites')
+
+    def __init__(self, *args, **kwargs):
+        fav = kwargs.pop('fav', '')
+        print(fav)
+        super(FavouriteForm, self).__init__(*args, **kwargs)
+        # Songs that are not already in favourites should be shown
+        self.fields['favourites'] = forms.ModelMultipleChoiceField(
+            queryset=Song.objects.exclude(
+                song_id__in=Song.objects.get(song_id=fav).values_list('song_id')
+                                        .union(Song.objects.filter(song_id=song).values_list('song_id'))),
+            widget=forms.CheckboxSelectMultiple())
+        self.fields['favourites'] = forms.IntegerField(widget=forms.HiddenInput, initial=fav)
+
+
 class UserForm(forms.ModelForm):
     username = forms.CharField(widget=forms.TextInput(attrs={"class": "col-sm-6", "required": "required"}))
     email = forms.EmailField(widget=forms.EmailInput(attrs={"class": "col-sm-6"}))

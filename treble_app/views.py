@@ -244,6 +244,24 @@ def add_song_recommendation(request, song_id):
     return render(request, 'treble/add_recommendation.html', {'form': form})
 
 
+def add_favourite(request, username_slug):
+    form = FavouriteForm(request.POST, username_slug=username_slug)
+    data_copy = form.data.copy()
+    data_copy['favourite'] = favourite
+    form.data = data_copy
+    print(form.data)
+    if form.is_valid():
+        user = UserProfile.objects.get(username_slug=username_slug)
+        for target in form.cleaned_data['favourites']:
+            user.favourites.add(target)
+        return HttpResponseRedirect(reverse('user_account'), kwargs={"username_slug": username_slug})
+    else:
+        print(form.errors)
+
+    return render(request, 'treble/user_account.html', {'form': form})
+
+
+
 def spotify_lookup(request):
     return JsonResponse(search_spotify(request.GET.get("track"), "track"))
 
