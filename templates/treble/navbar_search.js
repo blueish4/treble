@@ -5,7 +5,7 @@ $(function() {
         this.widget().menu("option", "items", "> :not(.ui-autocomplete-category)");
     },
     _renderItemSong: function(ul, item){
-        var newHtml = "<div class='ui-menu-item-wrapper'><div><img src='" + item.artwork_url +  "'</></div><div class='search-menu-song'>" + item.track_name + "</div><div class='search-menu-artist'>by " + item.artist + "</div></div>";
+        var newHtml = "<div class='ui-menu-item-wrapper'><div class='search-artwork'><img src='" + item.artwork_url +  "'</></div><div class='search-menu-song'>" + item.track_name + "</div><div class='search-menu-artist'>by " + item.artist + "</div></div>";
         return $("<li>").data("ui-autocomplete-item",{"label":item.track_name,"value":item.track_name,"link":"{% url 'song' song_id=0 %}".replace(/0/,item.song_id)}).append(newHtml).appendTo(ul);
     },
     _renderItemUser: function(ul, item){
