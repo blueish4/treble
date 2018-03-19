@@ -1,0 +1,11 @@
+{% load staticfiles %}
+<script src="{% static 'search.js' %}"></script>
+<script>
+    var search_url = "{% url 'spotify_search' %}";
+    var search_term = "{{ term }}";
+    var add_endpoint = "{% url 'add_song' %}";
+    var song_url_stub = "{% url 'song' 0 %}";
+    var add_song_callback = function(data){
+        window.location.href = song_url_stub.replace("0", data.success);
+    }
+</script>
