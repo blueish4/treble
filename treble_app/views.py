@@ -285,7 +285,7 @@ def navbar_search(request):
 
         info = []
         for track in data:
-            info.append({'track_name': track['fields']['track_name'], 'artist': track['fields']['artist'], "song_id": track['pk']})
+            info.append({'track_name': track['fields']['track_name'], 'artist': track['fields']['artist'], "song_id": track['pk'], 'artwork_url': track['fields']['artwork_url']})
 
         return_dict.append({"label": info, "category": "Song", "logged_in": True})
 

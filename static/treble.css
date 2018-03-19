@@ -12,6 +12,10 @@ body {
     margin: 0px;
 }
 
+.comment-artwork img{
+    width: 8rem;
+}
+
 .comment-date {
     margin: 0px;
     position: absolute;
@@ -33,6 +37,11 @@ body {
 
 .search-menu-artist {
     font-style: italic;
+}
+
+.search-artwork img{
+    width: 3rem;
+    float: right;
 }
 
 .ui-autocomplete-category {
