@@ -147,7 +147,6 @@ def song(request, song_id):
                 prev_comment_id = comment.comment_id
                 break
 
-
         if request.user.is_authenticated():
             if prev_comment_id == -1:
                 context_dict['form'] = CommentForm(user=request.user, song_id=song_id)
@@ -157,6 +156,7 @@ def song(request, song_id):
                 context_dict['form'] = CommentForm(user=request.user, song_id=song_id, instance=comment)
                 context_dict['edit'] = True
                 context_dict['prev_comment_id'] = prev_comment_id
+            context_dict['add_song_form'] = SongForm(request.POST)
 
     except Song.DoesNotExist:
         # TODO Redirect to a 404 page instead
