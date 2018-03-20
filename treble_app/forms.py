@@ -66,25 +66,26 @@ class RecommendationForm(forms.Form):
                 song_id__in=Song.objects.get(song_id=song).recommended_songs.all().values_list('song_id')
                                         .union(Song.objects.filter(song_id=song).values_list('song_id'))),
             widget=forms.CheckboxSelectMultiple())
+
         self.fields['song_id'] = forms.IntegerField(widget=forms.HiddenInput, initial=song)
 
 
 class FavouriteForm(forms.Form):
+
     class Meta:
         model = UserProfile
         fields = ('favourites')
 
     def __init__(self, *args, **kwargs):
-        fav = kwargs.pop('fav', '')
-        print(fav)
+        username_slug = kwargs.pop('username_slug', '')
         super(FavouriteForm, self).__init__(*args, **kwargs)
+        user_profile = UserProfile.objects.get(username_slug=username_slug)
         # Songs that are not already in favourites should be shown
+        favourites = user_profile.favourites.all()
+        not_in_favourites = Song.objects.exclude(song_id__in=favourites.values_list('song_id'))
         self.fields['favourites'] = forms.ModelMultipleChoiceField(
-            queryset=Song.objects.exclude(
-                song_id__in=Song.objects.get(song_id=fav).values_list('song_id')
-                                        .union(Song.objects.filter(song_id=song).values_list('song_id'))),
+            queryset=not_in_favourites,
             widget=forms.CheckboxSelectMultiple())
-        self.fields['favourites'] = forms.IntegerField(widget=forms.HiddenInput, initial=fav)
 
 
 class UserForm(forms.ModelForm):
