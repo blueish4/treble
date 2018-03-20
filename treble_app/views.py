@@ -113,7 +113,7 @@ def register(request):
 @login_required  # Can only view other profiles if user is logged in
 def user_profile(request, username_slug):
     user = UserProfile.objects.get(username_slug=username_slug)
-    return render(request, 'treble/user_profile.html', {'user': user})
+    return render(request, 'treble/user_profile.html', {'profile': user})
 
 
 @login_required
@@ -280,7 +280,7 @@ def navbar_search(request):
 
         info = []
         for track in data:
-            info.append({'track_name': track['fields']['track_name'], 'artist': track['fields']['artist'], "song_id": track['pk']})
+            info.append({'track_name': track['fields']['track_name'], 'artist': track['fields']['artist'], "song_id": track['pk'], 'artwork_url': track['fields']['artwork_url']})
 
         return_dict.append({"label": info, "category": "Song", "logged_in": True})
 
