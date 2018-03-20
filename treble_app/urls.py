@@ -24,7 +24,6 @@ urlpatterns = [
     url(r'^faq/$', views.faq, name='faq'),
     url(r'^accounts/', include('registration.backends.default.urls')),
     url(r'^accounts/password/change/$', views.password_change, name='password_change'),
-    url(r'^search/(?P<search_term>[a-zA-Z0-9\s]*)$', views.search, name='search'),
     url(r'^ajax/spotify/$', views.spotify_lookup, name='spotify_search'),
     url(r'^add_song/$', views.add_song, name='add_song'),
     url(r'^ajax/navbar_search/$', views.navbar_search, name='navbar_search'),

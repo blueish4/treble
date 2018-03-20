@@ -248,11 +248,6 @@ def spotify_lookup(request):
     return JsonResponse(search_spotify(request.GET.get("track"), "track"))
 
 
-def search(request, search_term):
-    return render(request, 'treble/search.html', context={"term": search_term,
-                                                          "add_song_form": SongForm(request.POST)})
-
-
 def about(request):
     return render(request, 'treble/about.html', {})
 
