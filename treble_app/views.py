@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
 from django.core import serializers
 from django.core.urlresolvers import reverse
-from treble_app.forms import UserForm, UserProfileForm, SongForm, CommentForm, RecommendationForm
+from treble_app.forms import UserForm, UserProfileForm, SongForm, CommentForm, RecommendationForm, FavouriteForm
 from treble_app.models import Song, Comment, UserProfile
 from treble_app.spotify_search import search_spotify
 from json import loads
@@ -120,7 +120,11 @@ def user_profile(request, username_slug):
 def user_account(request):
     user = request.user
     user_profile = UserProfile.objects.get(user=user)
-    return render(request, 'treble/user_account.html', {'user': user, 'user_profile': user_profile})
+    context_dict = {}
+    context_dict['user'] = user
+    context_dict['user_profile'] = user_profile
+    context_dict['favourite_form'] = FavouriteForm(request.POST, username_slug=user_profile.username_slug)
+    return render(request, 'treble/user_account.html', context_dict)
 
 
 def password_change(request):
@@ -244,16 +248,19 @@ def add_song_recommendation(request, song_id):
     return render(request, 'treble/add_recommendation.html', {'form': form})
 
 
-def add_favourite(request, username_slug):
-    form = FavouriteForm(request.POST, username_slug=username_slug)
+def add_favourite(request):
+    user = request.user
+    user_profile = UserProfile.objects.get(user=user)
+    form = FavouriteForm(request.POST, username_slug=user_profile.username_slug)
     data_copy = form.data.copy()
-    data_copy['favourite'] = favourite
+    data_copy['favourites'] = user_profile.favourites
     form.data = data_copy
+
     print(form.data)
+
     if form.is_valid():
-        user = UserProfile.objects.get(username_slug=username_slug)
         for target in form.cleaned_data['favourites']:
-            user.favourites.add(target)
+            user_profile.favourites.add(target)
         return HttpResponseRedirect(reverse('user_account'), kwargs={"username_slug": username_slug})
     else:
         print(form.errors)

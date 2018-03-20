@@ -36,6 +36,9 @@
     <div id="favourites" class="row-3">
       <div>
         <h1>My Favourites</h1>
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-rec-modal-lg">
+            + Add
+        </button>
         <div>
           <ul class="link-container">
             {% for song in user_profile.favourites.all %}
@@ -48,11 +51,6 @@
                     </a>
                 </li>
             {% endfor %}
-              <li>
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-rec-modal-lg">
-                    + Add
-                </button>
-              </li>
           </ul>
         </div>
     </div>
@@ -81,7 +79,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 id="add-song-modal-label">Add Recommendation</h4>
+                    <h4 id="add-song-modal-label">Add Favourite</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
@@ -96,7 +94,7 @@
                 <button type="button" id="add_song" class="btn btn-primary" data-toggle="modal" >Add song</button>
                 </div>
             <div class="modal-footer">
-                <button class="btn btn-primary" type="submit" form="add-rec-form">Add</button>
+                <button class="btn btn-primary" type="submit" form="add-fav-form">Add</button>
             </div>
             </div>
         </div>
