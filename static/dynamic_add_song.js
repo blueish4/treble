@@ -15,6 +15,7 @@ $("#add_song").on("click", function(){
     rec_modal.on("hidden.bs.modal", function(){
         var song_modal = $("#add-song-modal");
         song_modal.modal("show");
+        rec_modal.off("hidden.bs.modal");
         song_modal.on("hidden.bs.modal", function(){
             // reload the form with the added song
             $("#add-rec-modal").modal("show");
