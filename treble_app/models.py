@@ -22,6 +22,9 @@ class Song(models.Model):
 
     comments = models.ManyToManyField("Comment", symmetrical=False)
 
+    class Meta:
+        unique_together = (("track_name", "artist"),)
+
     def __str__(self):
         return self.track_name
 
@@ -34,7 +37,7 @@ class UserProfile(models.Model):
     favourites = models.ManyToManyField(Song, symmetrical=False)
     picture = models.ImageField(upload_to='profile_images', blank=True)
 
-    comments = models.ManyToManyField("Comment", symmetrical=False)
+    comments = models.ManyToManyField("Comment", symmetrical=True)
 
     def save(self, *args, **kwargs):
         self.username_slug = slugify(self.user.username)
