@@ -123,6 +123,16 @@ def user_account(request):
     context_dict = {}
     context_dict['user'] = user
     context_dict['user_profile'] = user_profile
+
+    rec_dict = {}
+    for song in user_profile.favourites.all():
+        for rec_song in song.recommended_songs.all():
+            if rec_song in rec_dict.keys():
+                rec_dict[rec_song].append(song)
+            else:
+                rec_dict[rec_song] = [song]
+
+    context_dict['rec_dict'] = rec_dict
     context_dict['favourite_form'] = FavouriteForm(request.POST, username_slug=user_profile.username_slug)
     return render(request, 'treble/user_account.html', context_dict)
 
@@ -253,15 +263,13 @@ def add_favourite(request):
     user_profile = UserProfile.objects.get(user=user)
     form = FavouriteForm(request.POST, username_slug=user_profile.username_slug)
     data_copy = form.data.copy()
-    data_copy['favourites'] = user_profile.favourites
+    data_copy['user'] = user_profile.username_slug
     form.data = data_copy
-
-    print(form.data)
 
     if form.is_valid():
         for target in form.cleaned_data['favourites']:
             user_profile.favourites.add(target)
-        return HttpResponseRedirect(reverse('user_account'), kwargs={"username_slug": username_slug})
+        return HttpResponseRedirect(reverse('user_account'))
     else:
         print(form.errors)
 

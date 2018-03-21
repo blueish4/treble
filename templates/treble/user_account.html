@@ -15,20 +15,23 @@
         <h1>Recommended for you</h1>
         <div>
           <ul class="link-container">
-            {% for fav_song in user_profile.favourites.all %}
-              {% for rec_song in fav_song.recommended_songs.all %}
+            {% for song, reasons in rec_dict.items %}
+            {% if song not in user_profile.favourites.all %}
                   <li class="song-link">
-                      <a href="{% url 'song' rec_song.song_id %}">
-                          <img src="{{ rec_song.artwork_url }}"/>
+                      <a href="{% url 'song' song.song_id %}">
+                          <img src="{{ song.artwork_url }}"/>
                           <div class="song-title">
-                              <p>{{ rec_song.track_name }}</p>
+                              <p>{{ song.track_name }}</p>
                           </div>
                       </a>
                       <div>
-                          Since you like: <br /> {{ fav_song.track_name }}
+                          Since you like:
+                          {% for reason in reasons %}
+                          <br /> {{ reason.track_name }}
+                          {% endfor %}
                       </div>
                   </li>
-              {% endfor %}
+            {% endif %}
             {% endfor %}
           </ul>
         </div>
@@ -58,7 +61,6 @@
         <h1>My Reviews</h1>
         <div>
           <ul class="row">
-            {% if user_profile.comments.count > 0 %}
               {% for review in user_profile.comments.all %}
                   <div class="col-md-6">
                     <div class='comment-artwork'>
@@ -71,7 +73,6 @@
                       <p class="comment-date">{{ review.datetime|date:"H:i | j M Y" }}</p>
                   </div>
               {% endfor %}
-            {% endif %}
           </ul>
         </div>
     </div>

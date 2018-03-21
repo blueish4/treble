@@ -74,7 +74,7 @@ class FavouriteForm(forms.Form):
 
     class Meta:
         model = UserProfile
-        fields = ('favourites')
+        fields = ('favourites', 'username_slug')
 
     def __init__(self, *args, **kwargs):
         username_slug = kwargs.pop('username_slug', '')
