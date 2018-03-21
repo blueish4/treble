@@ -60,7 +60,7 @@ def populate():
     # List of dictionaries containing Users
     comments = [
         {"song_id": 1,
-         "username": "Sir Ri",
+         "username": "Sir_Ri",
          "message": "This is a very good song.",
          "reaction": 2},
 
@@ -70,7 +70,7 @@ def populate():
          "reaction": 1},
 
         {"song_id": 2,
-         "username": "Sir Ri",
+         "username": "Sir_Ri",
          "message": "This song is amazing!",
          "reaction": 3},
 
