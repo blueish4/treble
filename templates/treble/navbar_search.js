@@ -16,11 +16,6 @@ $(function() {
         var newHtml = "<div class='ui-menu-item-wrapper'><div class='search-menu-not-logged-in'>" + label + "</div></div>";
         return $("<li>").data("ui-autocomplete-item",{"link":"{% url 'auth_login' %}"}).append(newHtml).appendTo(ul);
     },
-    _renderAddSong: function(ul){
-      var text = "Can't find the song you're looking for? <br/>Add from Spotify by clicking here.";
-      var newHtml = "<div class='search-menu-not-logged-in'>" + text + "</div>";
-      return $("<li>").data("ui-autocomplete-item",{"link":"{% url 'search' search_term=''%}"}).append(newHtml).appendTo(ul);
-    },
     _renderMenu: function(ul, items) {
         var that = this;
         currentCategory = "";
@@ -50,11 +45,6 @@ $(function() {
                         li = that._renderItemUserNotLoggedIn(ul, item.label);
                     }
                 }
-            }
-            if (index < items.length - 1){
-              if (items[index+1].category == "User"){
-                li = that._renderAddSong(ul);
-              }
             }
         });
 
