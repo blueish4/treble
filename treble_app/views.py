@@ -16,11 +16,18 @@ import json
 
 
 def index(request):
-    most_recommended_songs = Song.objects.order_by('-no_of_recommendations')[:5]
-    context_dict = {'most_recommended_songs': most_recommended_songs}
+	comment_list = Comment.objects.order_by('datetime')[:5]
+	context_list = []
+	for comment in comment_list:
+		song = Song.objects.filter(track_name=comment.song_id)
+		context_list += song
+	context_dict = {'songs':context_list, 'comments':comment_list}
+	return render(request, 'treble/index.html', context_dict)
 
-    return render(request, 'treble/index.html', context_dict)
-
+def most_reccomended(request):
+	song_list = Song.objects.order_by('-no_of_recommendations')[:5]
+	context_dict = {'songs':song_list}
+	return render(request, 'treble/most_reccomended.html', context_dict)
 
 def user_login(request):
     if request.user.is_authenticated():
