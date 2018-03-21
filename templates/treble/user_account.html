@@ -15,20 +15,23 @@
         <h1>Recommended for you</h1>
         <div>
           <ul class="link-container">
-            {% for fav_song in user_profile.favourites.all %}
-              {% for rec_song in fav_song.recommended_songs.all %}
+            {% for song, reasons in rec_dict.items %}
+            {% if song not in user_profile.favourites.all %}
                   <li class="song-link">
-                      <a href="{% url 'song' rec_song.song_id %}">
-                          <img src="{{ rec_song.artwork_url }}"/>
+                      <a href="{% url 'song' song.song_id %}">
+                          <img src="{{ song.artwork_url }}"/>
                           <div class="song-title">
-                              <p>{{ rec_song.track_name }}</p>
+                              <p>{{ song.track_name }}</p>
                           </div>
                       </a>
                       <div>
-                          Since you like: <br /> {{ fav_song.track_name }}
+                          Since you like:
+                          {% for reason in reasons %}
+                          <br /> {{ reason.track_name }}
+                          {% endfor %}
                       </div>
                   </li>
-              {% endfor %}
+            {% endif %}
             {% endfor %}
           </ul>
         </div>
@@ -36,6 +39,9 @@
     <div id="favourites" class="row-3">
       <div>
         <h1>My Favourites</h1>
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-rec-modal-lg">
+            + Add
+        </button>
         <div>
           <ul class="link-container">
             {% for song in user_profile.favourites.all %}
@@ -58,7 +64,6 @@
         <h1>My Reviews</h1>
         <div>
           <ul class="row">
-            {% if user_profile.comments.count > 0 %}
               {% for review in user_profile.comments.all %}
                   <div class="col-md-6">
                     <div class='comment-artwork'>
@@ -71,9 +76,37 @@
                       <p class="comment-date">{{ review.datetime|date:"H:i | j M Y" }}</p>
                   </div>
               {% endfor %}
-            {% endif %}
           </ul>
         </div>
     </div>
+    <div id="add-rec-modal" class="modal fade bd-rec-modal-lg" tabindex="-1" role="dialog" aria-labelledby="add-rec-modal-label" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 id="add-song-modal-label">Add Favourite</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                <form id="add-fav-form" action="{% url 'add_favourite' %}" method="post">
+                {% csrf_token %}
+                    {% for field in favourite_form %}
+                    {{ field }}
+                    {% endfor %}
+                </form>
+                <button type="button" id="add_song" class="btn btn-primary" data-toggle="modal" >Add song</button>
+                </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" type="submit" form="add-fav-form">Add</button>
+            </div>
+            </div>
+        </div>
+    </div>
+        {% include 'includes/add_song.html' %}
 </div>
+{% endblock %}
+{% block additional_js %}
+  {% include "includes/search_js_stub.html" %}
+  <script src="{% static 'dynamic_add_song.js' %}"></script>
 {% endblock %}
