@@ -113,7 +113,7 @@ def register(request):
 @login_required  # Can only view other profiles if user is logged in
 def user_profile(request, username_slug):
     user = UserProfile.objects.get(username_slug=username_slug)
-    return render(request, 'treble/user_profile.html', {'user': user})
+    return render(request, 'treble/user_profile.html', {'profile': user})
 
 
 @login_required
@@ -281,11 +281,6 @@ def add_favourite(request):
 
 def spotify_lookup(request):
     return JsonResponse(search_spotify(request.GET.get("track"), "track"))
-
-
-def search(request, search_term):
-    return render(request, 'treble/search.html', context={"term": search_term,
-                                                          "add_song_form": SongForm(request.POST)})
 
 
 def about(request):
