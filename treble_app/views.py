@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
 from django.core import serializers
 from django.core.urlresolvers import reverse
-from treble_app.forms import UserForm, UserProfileForm, SongForm, CommentForm, RecommendationForm
+from treble_app.forms import UserForm, UserProfileForm, SongForm, CommentForm, RecommendationForm, FavouriteForm
 from treble_app.models import Song, Comment, UserProfile
 from treble_app.spotify_search import search_spotify
 from json import loads
@@ -120,7 +120,21 @@ def user_profile(request, username_slug):
 def user_account(request):
     user = request.user
     user_profile = UserProfile.objects.get(user=user)
-    return render(request, 'treble/user_account.html', {'user': user, 'user_profile': user_profile})
+    context_dict = {}
+    context_dict['user'] = user
+    context_dict['user_profile'] = user_profile
+
+    rec_dict = {}
+    for song in user_profile.favourites.all():
+        for rec_song in song.recommended_songs.all():
+            if rec_song in rec_dict.keys():
+                rec_dict[rec_song].append(song)
+            else:
+                rec_dict[rec_song] = [song]
+
+    context_dict['rec_dict'] = rec_dict
+    context_dict['favourite_form'] = FavouriteForm(request.POST, username_slug=user_profile.username_slug)
+    return render(request, 'treble/user_account.html', context_dict)
 
 
 def password_change(request):
@@ -144,7 +158,7 @@ def song(request, song_id):
         prev_comment_id = -1
         for comment in comments:
             if comment.username.id == request.user.id:
-                prev_comment_id = comment.comment_id
+                prev_comment_id = comment.pk
                 break
 
         if request.user.is_authenticated():
@@ -152,7 +166,7 @@ def song(request, song_id):
                 context_dict['form'] = CommentForm(user=request.user, song_id=song_id)
                 context_dict['edit'] = False
             else:
-                comment = Comment.objects.get(comment_id=prev_comment_id)
+                comment = Comment.objects.get(pk=prev_comment_id)
                 context_dict['form'] = CommentForm(user=request.user, song_id=song_id, instance=comment)
                 context_dict['edit'] = True
                 context_dict['prev_comment_id'] = prev_comment_id
@@ -194,7 +208,10 @@ def add_song_comment(request, song_id):
     data_copy["datetime"] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     form.data = data_copy
     if form.is_valid():
-        form.save(commit=True)
+        inst = form.save(commit=False)
+        inst.pk = None
+        inst.save()
+        UserProfile.objects.get(user=request.user).comments.add(inst)
     else:
         # TODO display errors somehow.
         # This might become easier if the form becomes an AJAX one, since it can be is the response body
@@ -208,8 +225,7 @@ def edit_song_comment(request, song_id, comment_id):
     if not request.user.is_authenticated():
         return HttpResponseRedirect(reverse('song', kwargs={"song_id": song_id}))
 
-    comment = Comment.objects.get(comment_id=comment_id)
-    print(comment.comment_id,comment.message)
+    comment = Comment.objects.get(pk=comment_id)
     form = CommentForm(request.POST, user=request.user, song_id=song_id, instance=comment)
     # Set the username and song id on the server side
     data_copy = form.data.copy()
@@ -242,6 +258,25 @@ def add_song_recommendation(request, song_id):
         print(form.errors)
 
     return render(request, 'treble/add_recommendation.html', {'form': form})
+
+
+def add_favourite(request):
+    user = request.user
+    user_profile = UserProfile.objects.get(user=user)
+    form = FavouriteForm(request.POST, username_slug=user_profile.username_slug)
+    data_copy = form.data.copy()
+    data_copy['user'] = user_profile.username_slug
+    form.data = data_copy
+
+    if form.is_valid():
+        for target in form.cleaned_data['favourites']:
+            user_profile.favourites.add(target)
+        return HttpResponseRedirect(reverse('user_account'))
+    else:
+        print(form.errors)
+
+    return render(request, 'treble/user_account.html', {'form': form})
+
 
 
 def spotify_lookup(request):

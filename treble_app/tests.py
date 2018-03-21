@@ -145,4 +145,3 @@ class SongViewTests(TestCase):
         response = self.client.get(reverse('song', kwargs={"song_id":-1}))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['song'], None)
-
