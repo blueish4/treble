@@ -36,7 +36,7 @@ def user_login(request):
         if user:
             # Is user still active? (or disabled?)
             if user.is_active:
-                # Log them in and redirect to homepage
+                # Log them in and redirect to last page or homepage
                 login(request, user)
                 return HttpResponseRedirect(reverse('index'))
             else:
