@@ -6,14 +6,13 @@
 {% endblock %}
 
 {% block body_block %}
-<div>
+<div >
     <div class="row justify-content-md-left">
         <img class = "col-md-auto" id="picture" src="{{ MEDIA_URL}}/profile_images/siri.png"/>
         <h1 class = "col col-lg-2">{{ user }}</h1>
-        <h1 class = "col col-lg-2">{{ user.email }}</h1>
     </div>
-    <div id="top-recommended" class="row-1">
-        <h1>Top Recommendations for you</h1>
+    <div id="recommended" class="row-1">
+        <h1>Recommended for you</h1>
         <div>
           <ul class="link-container">
             {% for fav_song in user_profile.favourites.all %}
@@ -30,16 +29,6 @@
                       </div>
                   </li>
               {% endfor %}
-            {% endfor %}
-          </ul>
-        </div>
-    </div>
-    <div class='dropdown'>
-        <h1>Recommendations based on</h1>
-        <button id="drop" class="dropbtn">My Favourites</button>
-        <div class="dropdown-content">
-            {% for fav_song in user_profile.favourites.all %}
-              <a>{{ fav_song }}</a>
             {% endfor %}
           </ul>
         </div>
@@ -116,5 +105,4 @@
 {% block additional_js %}
   {% include "includes/search_js_stub.html" %}
   <script src="{% static 'dynamic_add_song.js' %}"></script>
-  <script>{%include 'treble/recommend_by_song.js' %}</script>
 {% endblock %}
