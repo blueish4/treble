@@ -209,10 +209,9 @@ def add_song_comment(request, song_id):
     form.data = data_copy
     if form.is_valid():
         inst = form.save(commit=False)
-        print(type(inst))
         inst.pk = None
         inst.save()
-        print(inst.pk)
+        UserProfile.objects.get(user=request.user).comments.add(inst)
     else:
         # TODO display errors somehow.
         # This might become easier if the form becomes an AJAX one, since it can be is the response body
