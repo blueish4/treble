@@ -8,8 +8,7 @@ def get_access_token(client_id, client_secret):
     token_url = "https://accounts.spotify.com/api/token"
 
     # Must be encoded to get access token
-    #encoded = b64encode(bytes(client_id + ':' + client_secret, "utf-8")).decode("ascii")
-    encoded = b64encode(client_id + ':' + client_secret, "utf-8").encode("ascii")
+    encoded = b64encode(bytes(client_id + ':' + client_secret, "utf-8")).decode("ascii")
 
     headers = {"Authorization": "Basic " + encoded}
     data = {"grant_type": "client_credentials"}
