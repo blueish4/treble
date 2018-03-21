@@ -51,7 +51,7 @@
                       <a class="dropdown-item" href="{% url 'auth_logout' %}?next=/treble/">Log out</a>
                       {% else %}
                       <a class="dropdown-item" href="{% url 'registration_register' %}">Register</a>
-                      <a class="dropdown-item" href="{% url 'auth_login' %}">Log in</a>
+                      <a class="dropdown-item" href="{% url 'auth_login' %}?next={{request.path}}">Log in</a>
                       {% endif %}
                   </div>
                 </div>
