@@ -158,7 +158,7 @@ def song(request, song_id):
         prev_comment_id = -1
         for comment in comments:
             if comment.username.id == request.user.id:
-                prev_comment_id = comment.comment_id
+                prev_comment_id = comment.pk
                 break
 
         if request.user.is_authenticated():
@@ -166,7 +166,7 @@ def song(request, song_id):
                 context_dict['form'] = CommentForm(user=request.user, song_id=song_id)
                 context_dict['edit'] = False
             else:
-                comment = Comment.objects.get(comment_id=prev_comment_id)
+                comment = Comment.objects.get(pk=prev_comment_id)
                 context_dict['form'] = CommentForm(user=request.user, song_id=song_id, instance=comment)
                 context_dict['edit'] = True
                 context_dict['prev_comment_id'] = prev_comment_id
@@ -208,7 +208,11 @@ def add_song_comment(request, song_id):
     data_copy["datetime"] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     form.data = data_copy
     if form.is_valid():
-        form.save(commit=True)
+        inst = form.save(commit=False)
+        print(type(inst))
+        inst.pk = None
+        inst.save()
+        print(inst.pk)
     else:
         # TODO display errors somehow.
         # This might become easier if the form becomes an AJAX one, since it can be is the response body
@@ -222,8 +226,7 @@ def edit_song_comment(request, song_id, comment_id):
     if not request.user.is_authenticated():
         return HttpResponseRedirect(reverse('song', kwargs={"song_id": song_id}))
 
-    comment = Comment.objects.get(comment_id=comment_id)
-    print(comment.comment_id,comment.message)
+    comment = Comment.objects.get(pk=comment_id)
     form = CommentForm(request.POST, user=request.user, song_id=song_id, instance=comment)
     # Set the username and song id on the server side
     data_copy = form.data.copy()

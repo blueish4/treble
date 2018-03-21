@@ -59,32 +59,27 @@ def populate():
 
     # List of dictionaries containing Users
     comments = [
-        {"comment_id": 1,
-         "song_id": 1,
+        {"song_id": 1,
          "username": "Sir Ri",
          "message": "This is a very good song.",
          "reaction": 2},
 
-        {"comment_id": 2,
-         "song_id": 1,
+        {"song_id": 1,
          "username": "Alexa",
          "message": "I love this song!",
          "reaction": 1},
 
-        {"comment_id": 3,
-         "song_id": 2,
+        {"song_id": 2,
          "username": "Sir Ri",
          "message": "This song is amazing!",
          "reaction": 3},
 
-        {"comment_id": 4,
-         "song_id": 4,
+        {"song_id": 4,
          "username": "Bob",
          "message": "Kendrick is GOAT.",
          "reaction": 4},
 
-        {"comment_id": 5,
-         "song_id": 5,
+        {"song_id": 5,
          "username": "Bob",
          "message": "Meh, it's okay I guess",
          "reaction": 5}
@@ -92,7 +87,7 @@ def populate():
 
     # List of dictionaries containing Users
     users = [
-        {"username": "Sir Ri",
+        {"username": "Sir_Ri",
          "email": "sir_ri@example.com",
          "password": "abcde",
          "favourites": [1, 2]
@@ -127,7 +122,7 @@ def populate():
         # Comments must be added after both Songs and Users
         new_comment = comments[j]
         song = Song.objects.get(song_id=new_comment['song_id'])
-        c = add_comment(song, new_comment['comment_id'],
+        c = add_comment(song,
                         new_comment['username'], new_comment['message'], new_comment['reaction'])
 
         song.comments.add(c)
@@ -220,9 +215,9 @@ def add_recommendation(add_to, recommendation):
     return True
 
 
-def add_comment(song_id, comment_id, username, message, reaction):
+def add_comment(song_id, username, message, reaction):
     c = Comment.objects.get_or_create(
-        song_id=song_id, comment_id=comment_id)[0]
+        song_id=song_id)[0]
     c.song_id = song_id
     slug_username = slugify(username)
     u = UserProfile.objects.get(username_slug=slug_username)
