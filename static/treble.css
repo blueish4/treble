@@ -173,3 +173,9 @@ textarea {
     max-width: 4rem;
     max-height: 4rem;
 }
+
+/* should have been loaded by boostrap, but hasn't for some reason */
+.dropdown-menu-right {
+  right: 0;
+  left: auto;
+}
