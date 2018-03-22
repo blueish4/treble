@@ -26,7 +26,7 @@
             <a class="navbar-brand" href="{% url 'index' %}"><img id="logo" src="{% static 'treble_logo.svg' %}" alt="Treble"></a>
             <div id="navbarCollapse" class="navbar-collapse collapse justify-content-between">
                 <ul class="navbar-nav mr-auto">
-                    <li class="nav-link">Most popular</li>
+                    <li class="nav-link"><a href="{% url 'most_reccomended' %}">Most reccomended</a></li>
                     <li class=""><a href="{% url 'about' %}" class="nav-link">About us</a></li>
                     <li class=""><a href="{% url 'faq' %}" class="nav-link">FAQ</a></li>
                 </ul>
@@ -67,7 +67,8 @@
     {% endblock %}
     </div>
     <div class="site-footer container-full">
-        <img id='logo-icon' src='{% static 'treble_logo_icon.png' %}' alt='Treble logo' />
+        <!-- <p class="text-center">Footer</p> -->
+        <div id="footer-image-left"></div><div id="footer-image-right"></div>
     </div>
     <!-- Add Song Modal Start -->
     {% if user.is_authenticated %}

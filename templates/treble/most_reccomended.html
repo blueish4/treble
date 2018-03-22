@@ -2,14 +2,11 @@
 {% load staticfiles %}
 
 {% block title_block %}
-    Homepage
+    Log In
 {% endblock %}
 
 {% block body_block %}
-<h1>Treble</h1>
-    <p>Welcome to treble!</p>
-<h2>Recently Reccomended </h2>
-	<p>Here is a list of the most recently reccomended songs from our users!</p>
+    <strong>Here's a list of the top 5 most reccomended songs in our database!</strong>
 	{% if songs %}
 		<ul>
 		{% for song in songs %}

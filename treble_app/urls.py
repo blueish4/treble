@@ -23,6 +23,7 @@ urlpatterns = [
     url(r'^about-us/$', views.about, name='about'),
     url(r'^contact-us/$', views.contact, name='contact'),
     url(r'^faq/$', views.faq, name='faq'),
+	url(r'^most_reccomended/$', views.most_reccomended, name='most_reccomended'),
     url(r'^accounts/', include('registration.backends.default.urls')),
     url(r'^accounts/password/change/$', views.password_change, name='password_change'),
     url(r'^ajax/spotify/$', views.spotify_lookup, name='spotify_search'),
