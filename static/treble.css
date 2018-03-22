@@ -200,3 +200,8 @@ textarea {
 .dropdown:hover .dropdown-content {
     display: block;
 }
+
+#picture {
+    max-width: 4rem;
+    max-height: 4rem;
+}
