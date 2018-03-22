@@ -35,7 +35,7 @@
         <div>
           <ul class="row">
             {% if profile.comments.count > 0 %}
-              {% for review in user.comments.all %}
+              {% for review in profile.comments.all %}
                   <div class="col-md-6">
                     <div class='comment-artwork'>
                       <img src={{ review.song_id.artwork_url }} />
