@@ -20,29 +20,33 @@ def index(request):
     for comment in comment_list:
         song = Song.objects.filter(track_name=comment.song_id)
         context_list += song
-    context_dict = {'songs': context_list, 'comments': comment_list}
+    context_dict = {'songs': context_list,
+                    'comments': comment_list,
+                    'add_song_form': SongForm()}
     return render(request, 'treble/index.html', context_dict)
 
 
 def most_recommended(request):
     song_list = Song.objects.order_by('-no_of_recommendations')[:5]
-    context_dict = {'songs': song_list}
+    context_dict = {'songs': song_list,
+                    'add_song_form': SongForm()}
     return render(request, 'treble/most_recommended.html', context_dict)
 
 
 @login_required  # Can only view other profiles if user is logged in
 def user_profile(request, username_slug):
     user = UserProfile.objects.get(username_slug=username_slug)
-    return render(request, 'treble/user_profile.html', {'profile': user})
+    add_song = SongForm()
+    return render(request, 'treble/user_profile.html', {'profile': user,
+                                                        'add_song_form': add_song})
 
 
 @login_required
 def user_account(request):
     user = request.user
     user_profile = UserProfile.objects.get(user=user)
-    context_dict = {}
-    context_dict['user'] = user
-    context_dict['user_profile'] = user_profile
+    context_dict = {'add_song_form': SongForm(),
+                    'user': user, 'user_profile': user_profile}
 
     rec_dict = {}
     for song in user_profile.favourites.all():
@@ -58,7 +62,7 @@ def user_account(request):
 
 
 def password_change(request):
-    return render(request, 'registration/password_change_form.html', {})
+    return render(request, 'registration/password_change_form.html', context={'add_song_form': SongForm()})
 
 
 def song(request, song_id):
@@ -177,7 +181,7 @@ def add_song_recommendation(request, song_id):
         # TODO RETURN JSON, esp. on errors
         print(form.errors)
 
-    return render(request, 'treble/add_recommendation.html', {'form': form})
+    return render(request, 'treble/add_recommendation.html', {'form': form, 'add_song_form': SongForm()})
 
 
 def add_favourite(request):
@@ -195,7 +199,7 @@ def add_favourite(request):
     else:
         print(form.errors)
 
-    return render(request, 'treble/user_account.html', {'form': form})
+    return render(request, 'treble/user_account.html', {'form': form, 'add_song_form': SongForm()})
 
 
 def spotify_lookup(request):
@@ -203,15 +207,15 @@ def spotify_lookup(request):
 
 
 def about(request):
-    return render(request, 'treble/about.html', {})
+    return render(request, 'treble/about.html', {'add_song_form': SongForm()})
 
 
 def contact(request):
-    return render(request, 'treble/contact.html', {})
+    return render(request, 'treble/contact.html', {'add_song_form': SongForm()})
 
 
 def faq(request):
-    return render(request, 'treble/faq.html', {})
+    return render(request, 'treble/faq.html', {'add_song_form': SongForm()})
 
 
 def user_logout(request):
