@@ -6,14 +6,22 @@
 {% endblock %}
 
 {% block body_block %}
-    <strong>Here's a list of the top 5 most reccomended songs in our database!</strong>
+    <p>Here is a list of the reccomended tracks from our users!</p>
 	{% if songs %}
 		<ul>
 		{% for song in songs %}
-			<li><a href="{% url 'song' song.song_id %}">{{song.track_name}}</a></li>
+			<li class="song-link">
+              <a href="{% url 'song' song.song_id %}">
+                  <img src="{{ song.artwork_url }}"/>
+                  <div class="song-title">
+                      <p>{{ song.track_name }}</p>
+                  </div>
+              </a>
+          </li>
 		{% endfor %}
 		</ul>
 	{% else %}
 		<h> oopsie, looks like there's nothing in our database! </h>
 	{% endif %}
 {% endblock %}
+

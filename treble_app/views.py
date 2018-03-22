@@ -32,7 +32,7 @@ def index(request):
 	return render(request, 'treble/index.html', context_dict)
 
 def most_reccomended(request):
-	song_list = Song.objects.order_by('-no_of_recommendations')[:5]
+	song_list = Song.objects.order_by('-no_of_recommendations')[:6]
 	context_dict = {'songs':song_list}
 	return render(request, 'treble/most_reccomended.html', context_dict)
 
