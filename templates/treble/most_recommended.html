@@ -2,11 +2,11 @@
 {% load staticfiles %}
 
 {% block title_block %}
-    Most Reccomended
+    Most Recommended
 {% endblock %}
 
 {% block body_block %}
-    <p>Here is a list of the reccomended tracks from our users!</p>
+    <p>Here is a list of the recommended tracks from our users!</p>
 	{% if songs %}
 		<ul>
 		{% for song in songs %}
@@ -21,7 +21,7 @@
 		{% endfor %}
 		</ul>
 	{% else %}
-		<h> oopsie, looks like there's nothing in our database! </h>
+		<h2> oopsie, looks like there's nothing in our database! </h2>
 	{% endif %}
 {% endblock %}
 

@@ -2,54 +2,54 @@
 {% load staticfiles %}
 
 {% block title_block %}
-    Log In
+    {{ profile }}
 {% endblock %}
 
 {% block body_block %}
-<div >
-    <div class="row justify-content-md-left">
-        <img class = "col-md-auto" id="picture" src="{{ MEDIA_URL }}/{{ profile.picture }}"/>
-        <h1 class = "col col-lg-2">{{ profile }}</h1>
+    <div>
+        <div class="row justify-content-md-left">
+            <img class="col-md-auto" id="picture" src="{{ MEDIA_URL }}/{{ profile.picture }}"/>
+            <h1 class="col col-lg-2">{{ profile }}</h1>
 
-    </div>
-    <h2 class = "col col-lg-2">{{ profile.user.email }}</h2>
-    <div id="favourites" class="row-3">
-        <h1>{{ profile }}'s Favourites</h1>
-        <div>
-          <ul class="link-container">
-              {% for song in profile.favourites.all %}
-                  <li class="song-link">
-                      <a href="{% url 'song' song.song_id %}">
-                          <img src="{{ song.artwork_url }}"/>
-                          <div class="song-title">
-                              <p>{{ song.track_name }}</p>
-                          </div>
-                      </a>
-                  </li>
-              {% endfor %}
-          </ul>
         </div>
-    </div>
-    <div id="reviews" class="row-4">
-        <h1>{{ profile }}'s Reviews</h1>
-        <div>
-          <ul class="row">
-            {% if profile.comments.count > 0 %}
-              {% for review in profile.comments.all %}
-                  <div class="col-md-6">
-                    <div class='comment-artwork'>
-                      <img src={{ review.song_id.artwork_url }} />
-                        <b>{{ review.song_id.track_name }}</b>
-                        <b>by {{ review.song_id.artist }}</b><br/><br />
-                    </div>
-                      <b>Reaction: </b>{{ review.get_reaction_display }}<br>
-                      <p class="comment-message">{{ review.message }}</p>
-                      <p class="comment-date">{{ review.datetime|date:"H:i | j M Y" }}</p>
-                  </div>
-              {% endfor %}
-            {% endif %}
-          </ul>
+        <h2 class="col col-lg-2">{{ profile.user.email }}</h2>
+        <div id="favourites" class="row-3">
+            <h1>{{ profile }}'s Favourites</h1>
+            <div>
+                <ul class="link-container">
+                    {% for song in profile.favourites.all %}
+                        <li class="song-link">
+                            <a href="{% url 'song' song.song_id %}">
+                                <img src="{{ song.artwork_url }}"/>
+                                <div class="song-title">
+                                    <p>{{ song.track_name }}</p>
+                                </div>
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
         </div>
-    </div>
+        <div id="reviews" class="row-4">
+            <h1>{{ profile }}'s Reviews</h1>
+            <div>
+                <ul class="row review-list">
+                    {% if profile.comments.count > 0 %}
+                        {% for review in profile.comments.all %}
+                            <div class="col-md-6">
+                                <div class='comment-artwork'>
+                                    <img src="{{ review.song_id.artwork_url }}"/>
+                                    <b>{{ review.song_id.track_name }}</b>
+                                    <b>by {{ review.song_id.artist }}</b><br/><br/>
+                                </div>
+                                <b>Reaction: </b>{{ review.get_reaction_display }}<br>
+                                <p class="comment-message">{{ review.message }}</p>
+                                <p class="comment-date">{{ review.datetime|date:"H:i | j M Y" }}</p>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
 </div>
 {% endblock %}
