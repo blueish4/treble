@@ -11,8 +11,10 @@
             <img id="cover-img" src="{{ song.artwork_url }}"/>
         </div>
         <div id="details" class="col-md-8 order-md-1">
-            <h1>{{ song.track_name }}</h1>
-            <h2>{{ song.artist }}</h2>
+            <h1>{{ song.track_name }}</h1><br />
+            <h2>Album: {{ song.album }}</h2>
+            <h2>Artist: {{ song.artist }}</h2>
+            <h3>{{ song.genre }}</h3>
             <iframe src="https://open.spotify.com/embed?uri={{ song.spotify_uri }}"
         frameborder="0" allow="encrypted-media" allowtransparency="true"></iframe>
         </div>
@@ -77,7 +79,7 @@
                     {% endif %}
                 </form>
             {% elif not user.is_authenticated %}
-                <p><a href="{% url 'auth_login' %}">Log in</a> to add a review</p>
+                <p><a href="{% url 'auth_login' %}?next={{request.path}}">Log in</a> to add a review</p>
             {% endif %}
         </div>
         <div class="row">
@@ -124,7 +126,6 @@
             </div>
         </div>
     </div>
-        {% include 'includes/add_song.html' %}
     {% endif %}
 {% endblock %}
 {% block additional_js %}

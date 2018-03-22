@@ -33,7 +33,7 @@ class CommentForm(forms.ModelForm):
 
     class Meta:
         model = Comment
-        exclude = ('comment_id', )#'datetime')
+        fields = '__all__'  #'datetime')
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', '')
@@ -47,6 +47,7 @@ class CommentForm(forms.ModelForm):
             queryset=Song.objects.filter(song_id=song_id), initial=Song.objects.none(),
             widget=forms.HiddenInput)
         self.fields['datetime'] = forms.DateTimeField(initial=datetime.datetime.today, widget=forms.HiddenInput)
+
 
 
 class RecommendationForm(forms.Form):
@@ -66,7 +67,26 @@ class RecommendationForm(forms.Form):
                 song_id__in=Song.objects.get(song_id=song).recommended_songs.all().values_list('song_id')
                                         .union(Song.objects.filter(song_id=song).values_list('song_id'))),
             widget=forms.CheckboxSelectMultiple())
+
         self.fields['song_id'] = forms.IntegerField(widget=forms.HiddenInput, initial=song)
+
+
+class FavouriteForm(forms.Form):
+
+    class Meta:
+        model = UserProfile
+        fields = ('favourites', 'username_slug')
+
+    def __init__(self, *args, **kwargs):
+        username_slug = kwargs.pop('username_slug', '')
+        super(FavouriteForm, self).__init__(*args, **kwargs)
+        user_profile = UserProfile.objects.get(username_slug=username_slug)
+        # Songs that are not already in favourites should be shown
+        favourites = user_profile.favourites.all()
+        not_in_favourites = Song.objects.exclude(song_id__in=favourites.values_list('song_id'))
+        self.fields['favourites'] = forms.ModelMultipleChoiceField(
+            queryset=not_in_favourites,
+            widget=forms.CheckboxSelectMultiple())
 
 
 class UserForm(forms.ModelForm):

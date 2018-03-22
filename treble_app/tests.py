@@ -200,5 +200,3 @@ class UserTests(TestCase):
         user_profile.save()
 
         response = self.client.post(reverse('user_profile', kwargs={"username_slug": user_profile.username_slug}))
-
-        
