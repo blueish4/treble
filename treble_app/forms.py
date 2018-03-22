@@ -2,6 +2,7 @@ from django import forms
 from treble_app.models import Song, Comment, UserProfile
 from django.contrib.auth.models import User
 import datetime
+from registration.forms import RegistrationFormUniqueEmail
 from django.utils import timezone
 
 
@@ -47,7 +48,6 @@ class CommentForm(forms.ModelForm):
             queryset=Song.objects.filter(song_id=song_id), initial=Song.objects.none(),
             widget=forms.HiddenInput)
         self.fields['datetime'] = forms.DateTimeField(initial=datetime.datetime.today, widget=forms.HiddenInput)
-
 
 
 class RecommendationForm(forms.Form):
@@ -99,8 +99,5 @@ class UserForm(forms.ModelForm):
         fields = ('username', 'email', 'password')
 
 
-class UserProfileForm(forms.ModelForm):
-
-    class Meta:
-        model = UserProfile
-        fields = ('picture',)
+class UserProfileForm(RegistrationFormUniqueEmail):
+    picture = forms.ImageField(required=False)
