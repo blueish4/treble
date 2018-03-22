@@ -144,4 +144,4 @@ gen
 */migrations/
 
 token.json
-treble/emailconfig.json
+emailconfig.json

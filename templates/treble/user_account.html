@@ -8,7 +8,7 @@
 {% block body_block %}
 <div >
     <div class="row justify-content-md-left">
-        <img class = "col-md-auto" id="picture" src="{{ MEDIA_URL}}/profile_images/siri.png"/>
+        <img class = "col-md-auto" id="picture" src="{{ MEDIA_URL }}/{{ user_profile.picture }}"/>
         <h1 class = "col col-lg-2">{{ user }}</h1>
     </div>
     <div id="recommended" class="row-1">

@@ -18,8 +18,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Static URLs
 TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
-MEDIA_DIR = os.path.join(BASE_DIR, 'media')
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
@@ -81,6 +79,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.media',
             ],
         },
     },
@@ -102,13 +101,14 @@ LOGIN_URL = '/treble/login/'
 # redux user auth email stuff
 ACCOUNT_ACTIVATION_DAYS = 2
 EMAIL_USE_TLS = True
-#get email server address and password form external json file
-data = {"EMAIL_HOST":"", "EMAIL_HOST_USER":"", "EMAIL_HOST_PASSWORD":""}
-path = os.path.dirname(__file__) + '/emailconfig.json'
+# get email server address and password form external json file
+data = {"EMAIL_HOST": "", "EMAIL_HOST_USER": "", "EMAIL_HOST_PASSWORD": ""}
+path = os.path.join(BASE_DIR, 'emailconfig.json')
 if os.path.isfile(path):
-	data = json.load(open(path))
+    data = json.load(open(path))
 else:
-	print("error - no valid json email config file available to settings.py \n 	      registration redux will not function properly.")
+    print("error - no valid json email config file available to settings.py \n" +
+          "           registration redux will not function properly.")
 EMAIL_HOST = data["EMAIL_HOST"]
 EMAIL_HOST_USER = data["EMAIL_HOST_USER"]
 EMAIL_HOST_PASSWORD = data["EMAIL_HOST_PASSWORD"]  # lil pump, ooh!
@@ -157,6 +157,7 @@ USE_L10N = True
 USE_TZ = True
 
 # Media
+MEDIA_DIR = os.path.join(BASE_DIR, 'media')
 MEDIA_ROOT = MEDIA_DIR
 MEDIA_URL = '/media/'
 

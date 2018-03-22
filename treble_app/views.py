@@ -8,7 +8,6 @@ from django.core.urlresolvers import reverse
 from treble_app.forms import UserForm, UserProfileForm, SongForm, CommentForm, RecommendationForm, FavouriteForm
 from treble_app.models import Song, Comment, UserProfile
 from treble_app.spotify_search import search_spotify
-from json import loads
 
 import datetime
 
@@ -16,120 +15,38 @@ import json
 
 
 def index(request):
-	comment_list = Comment.objects.order_by('datetime')[:5]
-	context_list = []
-	for comment in comment_list:
-		song = Song.objects.filter(track_name=comment.song_id)
-		context_list += song
-	context_dict = {'songs':context_list, 'comments':comment_list}
-	return render(request, 'treble/index.html', context_dict)
-
-def most_reccomended(request):
-	song_list = Song.objects.order_by('-no_of_recommendations')[:5]
-	context_dict = {'songs':song_list}
-	return render(request, 'treble/most_reccomended.html', context_dict)
-
-def user_login(request):
-    if request.user.is_authenticated():
-        return HttpResponseRedirect(reverse('index'))
-
-    if request.method == 'POST' and not request.user.is_authenticated():
-        # Get username and password (returns None if unsuccessful)
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        # User object returned if auth. is successful
-        user = authenticate(username=username, password=password)
-
-        if user:
-            # Is user still active? (or disabled?)
-            if user.is_active:
-                # Log them in and redirect to last page or homepage
-                login(request, user)
-                return HttpResponseRedirect(reverse('index'))
-            else:
-                message = "Your Treble account is disabled."
-                return render(request, 'registration/login.html', {'message': message})
-        else:
-            print("Invalid login details: "+username+" , "+password)
-            message = "Invalid login details supplied."
-            return render(request, 'registration/login.html', {'message': message})
-    else:
-        message = ''
-        return render(request, 'registration/login.html', {'message': message})
+    comment_list = Comment.objects.order_by('datetime')[:5]
+    context_list = []
+    for comment in comment_list:
+        song = Song.objects.filter(track_name=comment.song_id)
+        context_list += song
+    context_dict = {'songs': context_list,
+                    'comments': comment_list,
+                    'add_song_form': SongForm()}
+    return render(request, 'treble/index.html', context_dict)
 
 
-def register(request):
-    # a boolean value for telling te template
-    # whether the registration was successful
-    # set to false initially. code changes value to
-    # true when registration succeeds
-    registered = False
-
-    # If its a HTTP POST, we're interested in processing form data.
-    if request.method == 'POST':
-        # attempt to grab information from raw form information.
-        # Note that we make use of both UserForm and UserProfileForm.
-        user_form = UserForm(data=request.POST)
-        profile_form = UserProfileForm(data=request.POST)
-
-        # if the two forms are valid...
-        if user_form.is_valid() and profile_form.is_valid():
-            # Save the user's form data to the database.
-            user = user_form.save()
-
-            # Now we hash the password with the set_password method.
-            # Once hashed, we can update the user object.
-
-            user.set_password(user.password)
-            user.save()
-            # now sort out the UserProfile instance.
-            # Since we need to set the user attribute ourselves,
-            # we set commit=False. This delays saving the model
-            # until we're ready to avoid integrity problems.
-            profile = profile_form.save(commit=False)
-            profile.user = user
-
-            # Did the user provide a profile picture?
-            # If so , we need to get it from the input form and
-            # put it in the UserProfile model.
-            if 'picture' in request.FILES:
-                profile.picture = request.FILES['picture']
-            # now we save the UserProfile model instance
-            profile.save()
-
-            # update our variable to indicate that the template
-            # registration was successful
-            registered = True
-        else:
-            # invalid form or forms - mistakes or something else?
-            # print problems to the terminal.
-            print(user_form.errors, profile_form.errors)
-    else:
-        # not a HTTP POST, so we render our form using two ModelForm instances.
-        # These forms will be blank, ready for user input.
-        user_form = UserForm()
-        profile_form = UserProfileForm()
-    # render the template depending on the context.
-    return render(request,
-                  'registration/registration_form.html',
-                  {'user_form': user_form,
-                   'profile_form': profile_form,
-                   'registered': registered})
+def most_recommended(request):
+    song_list = Song.objects.order_by('-no_of_recommendations')[:5]
+    context_dict = {'songs': song_list,
+                    'add_song_form': SongForm()}
+    return render(request, 'treble/most_recommended.html', context_dict)
 
 
 @login_required  # Can only view other profiles if user is logged in
 def user_profile(request, username_slug):
     user = UserProfile.objects.get(username_slug=username_slug)
-    return render(request, 'treble/user_profile.html', {'profile': user})
+    add_song = SongForm()
+    return render(request, 'treble/user_profile.html', {'profile': user,
+                                                        'add_song_form': add_song})
 
 
 @login_required
 def user_account(request):
     user = request.user
     user_profile = UserProfile.objects.get(user=user)
-    context_dict = {}
-    context_dict['user'] = user
-    context_dict['user_profile'] = user_profile
+    context_dict = {'add_song_form': SongForm(),
+                    'user': user, 'user_profile': user_profile}
 
     rec_dict = {}
     for song in user_profile.favourites.all():
@@ -145,7 +62,7 @@ def user_account(request):
 
 
 def password_change(request):
-    return render(request, 'registration/password_change_form.html', {})
+    return render(request, 'registration/password_change_form.html', context={'add_song_form': SongForm()})
 
 
 def song(request, song_id):
@@ -264,7 +181,7 @@ def add_song_recommendation(request, song_id):
         # TODO RETURN JSON, esp. on errors
         print(form.errors)
 
-    return render(request, 'treble/add_recommendation.html', {'form': form})
+    return render(request, 'treble/add_recommendation.html', {'form': form, 'add_song_form': SongForm()})
 
 
 def add_favourite(request):
@@ -282,8 +199,7 @@ def add_favourite(request):
     else:
         print(form.errors)
 
-    return render(request, 'treble/user_account.html', {'form': form})
-
+    return render(request, 'treble/user_account.html', {'form': form, 'add_song_form': SongForm()})
 
 
 def spotify_lookup(request):
@@ -291,20 +207,21 @@ def spotify_lookup(request):
 
 
 def about(request):
-    return render(request, 'treble/about.html', {})
+    return render(request, 'treble/about.html', {'add_song_form': SongForm()})
 
 
 def contact(request):
-    return render(request, 'treble/contact.html', {})
+    return render(request, 'treble/contact.html', {'add_song_form': SongForm()})
 
 
 def faq(request):
-    return render(request, 'treble/faq.html', {})
+    return render(request, 'treble/faq.html', {'add_song_form': SongForm()})
 
 
 def user_logout(request):
     logout(request)
     return HttpResponseRedirect(reverse('index'))
+
 
 def navbar_search(request):
     search_term = request.GET.get('search_term', None)
