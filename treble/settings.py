@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
+import json
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -97,12 +98,20 @@ LOGIN_REDIRECT_URL = '/treble/'
 # and are trying to access pages requiring authentication
 LOGIN_URL = '/treble/login/'
 
+
 # redux user auth email stuff
 ACCOUNT_ACTIVATION_DAYS = 2
 EMAIL_USE_TLS = True
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'trebleserver@gmail.com'
-EMAIL_HOST_PASSWORD = 'guccigangguccigangguccigang'  # lil pump, ooh!
+#get email server address and password form external json file
+data = {"EMAIL_HOST":"", "EMAIL_HOST_USER":"", "EMAIL_HOST_PASSWORD":""}
+path = os.path.dirname(__file__) + '/emailconfig.json'
+if os.path.isfile(path):
+	data = json.load(open(path))
+else:
+	print("error - no valid json email config file available to settings.py \n 	      registration redux will not function properly.")
+EMAIL_HOST = data["EMAIL_HOST"]
+EMAIL_HOST_USER = data["EMAIL_HOST_USER"]
+EMAIL_HOST_PASSWORD = data["EMAIL_HOST_PASSWORD"]  # lil pump, ooh!
 EMAIL_PORT = 587
 
 # Database
