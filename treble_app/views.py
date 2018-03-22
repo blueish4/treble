@@ -15,14 +15,19 @@ import json
 
 
 def index(request):
-    comment_list = Comment.objects.order_by('datetime')[:5]
-    context_list = []
+    comment_list = Comment.objects.order_by('-datetime')
+    recently_reviewed = []
     for comment in comment_list:
         song = Song.objects.filter(track_name=comment.song_id)
-        context_list += song
-    context_dict = {'songs': context_list,
-                    'comments': comment_list,
-                    'add_song_form': SongForm()}
+
+        if song[0] not in recently_reviewed:
+            recently_reviewed += song
+
+        if len(recently_reviewed) == 5:
+            break
+
+    recently_added = Song.objects.order_by('-song_id')[:5]
+    context_dict = {'recently_reviewed':recently_reviewed, 'comments':comment_list, "recently_added":recently_added}
     return render(request, 'treble/index.html', context_dict)
 
 
