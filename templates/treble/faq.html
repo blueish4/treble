@@ -7,35 +7,49 @@
 
 {% block body_block %}
     <h1>Frequently Asked Questions</h1><hr>
-    <h3>What is Treble?</h3>
-      <p>
-        Ever found a song you really love, but never manage to find anything else quite like it? <br />
-        That's where Treble comes in. We provide a platform for music lovers to share their favourite music,
-        recommend songs to other users, and review all kinds of songs!
-      </p><br />
-    <h3>How does it work?</h3>
-      <p>
-        Simply <a href='{% url 'registration_register' %}'>sign up</a> for your free account, add your favourite songs and you're good to go! <br />
-        The next time someone adds a recommendation to one of your favourites, it will show up on your account page!
-      </p><br />
-    <h3>But where do you get the music metadata? Please tell me I don't have to add it all in myself...?</h3>
-      <p>
-        Of course not! <br />
-        We use the Spotify API to ensure you get all the information about any song you want to add, such as artwork,
-        album, artist and genre, so that you don't have to bother. Just search Spotify for the song you're looking for,
-        hit "Add Song" and we'll add all the information you need to our database!
-      </p><br />
-    <h3>So how do I add a recommendation or review a song?</h3>
-      <p>
-        If you want to add a recommendation, use our intuitive auto-completing search bar to navigate to the song you're
-        looking for, and add your recommendation. You can either add a song that is already in our database, or search Spotify
-        for your own addition! <br />
-        If you want to let everyone else know how great (or dissapointing..) a song in our database is, just scroll to the bottom
-        of the page for that song, and add your review, as well as an emoji reaction to summarise it!
-      </p><br />
-    <h3>Will other people be able to view my profile?</h3>
-      <p>
-        Viewing another user's profile is exclusive to user's who have a Treble account and are logged in. If another user is logged in
-        and wants to view your profile, they can use the search bar, and will be able to see your favourite songs and your reviews.
-      </p><br />
+    <div class="title">
+      <h3 class="title-text">What is Treble? [+]</h3>
+        <p class='info'>
+          Ever found a song you really love, but never manage to find anything else quite like it? <br />
+          That's where Treble comes in. We provide a platform for music lovers to share their favourite music,
+          recommend songs to other users, and review all kinds of songs!
+        </p><br />
+    </div>
+    <div class="title">
+      <h3 class="title-text">How does it work? [+]</h3>
+        <p class='info'>
+          Simply <a href='{% url 'registration_register' %}'>sign up</a> for your free account, add your favourite songs and you're good to go! <br />
+          The next time someone adds a recommendation to one of your favourites, it will show up on your account page!
+        </p><br />
+    </div>
+    <div class="title">
+      <h3 class="title-text">But where do you get the music metadata? Please tell me I don't have to add it all in myself...? [+]</h3>
+        <p class='info'>
+          Of course not! <br />
+          We use the Spotify API to ensure you get all the information about any song you want to add, such as artwork,
+          album, artist and genre, so that you don't have to bother. Just search Spotify for the song you're looking for,
+          hit "Add Song" and we'll add all the information you need to our database!
+        </p><br />
+    </div>
+    <div class="title">
+      <h3 class="title-text">So how do I add a recommendation or review a song? [+]</h3>
+        <p class='info'>
+          If you want to add a recommendation, use our intuitive auto-completing search bar to navigate to the song you're
+          looking for, and add your recommendation. You can either add a song that is already in our database, or search Spotify
+          for your own addition! <br />
+          If you want to let everyone else know how great (or dissapointing..) a song in our database is, just scroll to the bottom
+          of the page for that song, and add your review, as well as an emoji reaction to summarise it!
+        </p><br />
+    </div>
+    <div class="title">
+      <h3 class="title-text">Will other people be able to view my profile? [+]</h3>
+        <p class='info'>
+          Viewing another user's profile is exclusive to user's who have a Treble account and are logged in. If another user is logged in
+          and wants to view your profile, they can use the search bar, and will be able to see your favourite songs and your reviews.
+        </p><br />
+    </div>
+{% endblock %}
+
+{% block additional_js %}
+    <script>{% include "treble/faq_javascript.js" %}</script>
 {% endblock %}
