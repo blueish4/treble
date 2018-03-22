@@ -8,7 +8,7 @@
 {% block body_block %}
 <div >
     <div class="row justify-content-md-left">
-        <img class = "col-md-auto" id="picture" src="{% static '/profile_images/unnamed.jpg' %}"/>
+        <img class = "col-md-auto" id="picture" src="{{ MEDIA_URL }}/{{ profile.picture }}"/>
         <h1 class = "col col-lg-2">{{ profile }}</h1>
 
     </div>
@@ -35,7 +35,7 @@
         <div>
           <ul class="row">
             {% if profile.comments.count > 0 %}
-              {% for review in user.comments.all %}
+              {% for review in profile.comments.all %}
                   <div class="col-md-6">
                     <div class='comment-artwork'>
                       <img src={{ review.song_id.artwork_url }} />
