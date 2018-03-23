@@ -21,7 +21,7 @@ from django.contrib import admin
 from treble_app import views
 
 urlpatterns = [
-    url(r'^$',views.index, name='index'),
+    url(r'^$', views.index, name='index'),
     url(r'^treble/', include('treble_app.urls')),
     url(r'^admin/', admin.site.urls),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
