@@ -48,7 +48,7 @@
                     + Add
                 </button>
             </div>
-            {% if user_profile.favourites %}
+            {% if user_profile.favourites.count > 0 %}
             <div>
                 <ul class="link-container">
                     {% for song in user_profile.favourites.all %}
