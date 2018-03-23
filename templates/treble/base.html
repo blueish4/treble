@@ -23,7 +23,7 @@
 <body>
     <header>
         <nav class="navbar navbar-expand-md navbar-dark sticky-top bg-dark justify-content-between">
-            <a class="navbar-brand" href="{% url 'index' %}"><img id="logo" src="{% static 'treble_logo.svg' %}" alt="Treble"></a>
+            <a class="navbar-brand" href="{% url 'index' %}"><img id="logo" src="{% static 'treble_logo.min.svg' %}" alt="Treble"></a>
             <div id="navbarCollapse" class="navbar-collapse collapse justify-content-between">
                 <ul class="navbar-nav mr-auto">
                     <li><a href="{% url 'most_recommended' %}" class="nav-link">Most recommended</a></li>
@@ -37,15 +37,15 @@
                 {% if user.is_authenticated %}
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-add-modal-lg">Add song</button>
                 {% endif %}
-                <div class="dropdown show nav-link">
-                    <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="login-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <div class="dropdown nav-link">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         {% if user.is_authenticated %}
                             {{ user.username }}
                         {% else %}
                             Log in/Register
                         {% endif %}
-                    </a>
-                  <div class="dropdown-menu" aria-labelledby="login-dropdown">
+                    </button>
+                  <div class="dropdown-menu-right dropdown-menu" aria-labelledby="login-dropdown">
                       <!-- These will be different when logged in -->
                       {% if user.is_authenticated %}
                       <a class="dropdown-item" href="{% url 'user_account'%}">My profile</a>
@@ -70,7 +70,6 @@
     {% endblock %}
     </div>
     <div class="site-footer container-full">
-        <!-- <p class="text-center">Footer</p> -->
         <div id="footer-image-left"></div><div id="footer-image-right"></div>
     </div>
     <!-- Add Song Modal Start -->

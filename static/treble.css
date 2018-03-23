@@ -3,21 +3,18 @@ body {
 }
 
 #footer-image-left {
-    background-image: url(treble_logo_icon.svg);
-    background-repeat: no-repeat;
     background-size: auto 100%;
     -webkit-background-size: auto 100%;
     -moz-background-size: auto 100%;
     -o-background-size: auto 100%;
-    background-position: right;
+    background: url(treble_logo_icon.svg) no-repeat right;
     width: 5%;
     min-height: 70px;
     display: inline-block;
 }
 
 #footer-image-right {
-    background-image: url(footer_staves.png);
-    background-repeat: no-repeat;
+    background: url(footer_staves.png) no-repeat;
     background-size: 100% 100%;
     -webkit-background-size: 100% 100%;
     -moz-background-size: 100% 100%;
@@ -28,21 +25,28 @@ body {
 }
 
 .row .col-md-6 {
-    border: 0.5px #ffffff solid;
     background-color: #f5f5f5;
     padding: 5px;
 }
 
-.comment-message {
-    margin: 0px;
+.review-list {
+    padding: 0;
 }
 
-.comment-artwork img{
+.comment-message {
+    margin: 0;
+}
+
+.comment-artwork {
+    margin-bottom: 1.5rem;
+}
+
+.comment-artwork img {
     width: 8rem;
 }
 
 .comment-date {
-    margin: 0px;
+    margin: 0;
     position: absolute;
     bottom: 5px;
     right: 5px;
@@ -52,8 +56,8 @@ body {
 }
 
 .search-menu-not-logged-in {
-  font-style: italic;
-  font-size: 0.9em;
+    font-style: italic;
+    font-size: 0.9em;
 }
 
 .search-menu-song {
@@ -64,7 +68,7 @@ body {
     font-style: italic;
 }
 
-.search-artwork img{
+.search-artwork img {
     width: 3rem;
     float: right;
 }
@@ -104,9 +108,13 @@ body {
     padding-left: 2rem;
 }
 
+.left-margin {
+    margin-left: 2rem;
+}
+
 .link-container {
     overflow-x: scroll;
-    overflow-y:hidden;
+    overflow-y: hidden;
     white-space: nowrap;
     width: 100%;
 }
@@ -121,8 +129,8 @@ body {
     width: 14rem;
 }
 
-.song-link  div p {
-    margin:0;
+.song-link div p {
+    margin: 0;
     color: white;
 }
 
@@ -131,7 +139,7 @@ body {
     bottom: 1.4rem;
     text-align: center;
     width: auto;
-    background: rgba(0.3,0.3,0.3,0.85);
+    background: rgba(0.3, 0.3, 0.3, 0.85);
 }
 
 #cover-img {
@@ -143,15 +151,17 @@ body {
 }
 
 #spotify-results {
-    padding:0;
+    padding: 0;
 }
 
-#spotify-results div{
+#spotify-results div {
     border-bottom: 1px #efefef solid;
 }
+
 .result-head {
     margin: 0;
 }
+
 .result-img {
     width: inherit;
 }
@@ -166,10 +176,16 @@ textarea {
 }
 
 .info {
-  display: none;
+    display: none;
 }
 
 #picture {
     max-width: 4rem;
     max-height: 4rem;
+}
+
+/* should have been loaded by boostrap, but hasn't for some reason */
+.dropdown-menu-right {
+    right: 0;
+    left: auto;
 }
