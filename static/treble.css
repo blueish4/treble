@@ -3,11 +3,11 @@ body {
 }
 
 #footer-image-left {
+    background: url(treble_logo_icon.svg) no-repeat right;
     background-size: auto 100%;
     -webkit-background-size: auto 100%;
     -moz-background-size: auto 100%;
     -o-background-size: auto 100%;
-    background: url(treble_logo_icon.svg) no-repeat right;
     width: 5%;
     min-height: 70px;
     display: inline-block;
