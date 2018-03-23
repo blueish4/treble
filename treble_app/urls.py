@@ -16,7 +16,7 @@ urlpatterns = [
     url(r'^contact-us/$', views.contact, name='contact'),
     url(r'^faq/$', views.faq, name='faq'),
     url(r'^most_recommended/$', views.most_recommended, name='most_recommended'),
-    url(r'^accounts/register/', MyRegistrationView.as_view()),
+    url(r'^accounts/register/$', MyRegistrationView.as_view()),
     url(r'^accounts/', include('registration.backends.default.urls')),
     url(r'^accounts/password/change/$', views.password_change, name='password_change'),
     url(r'^ajax/spotify/$', views.spotify_lookup, name='spotify_search'),
