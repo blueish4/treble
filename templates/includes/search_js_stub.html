@@ -6,6 +6,6 @@
     var add_endpoint = "{% url 'add_song' %}";
     var song_url_stub = "{% url 'song' 0 %}";
     var add_song_callback = function(data){
-        window.location.href = song_url_stub.replace("0", data.success);
+        window.location.href = song_url_stub.replace("/0", "/" + data.song_id);
     }
 </script>
