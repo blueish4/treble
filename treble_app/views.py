@@ -29,7 +29,8 @@ def index(request):
     recently_added = Song.objects.order_by('-song_id')[:5]
     context_dict = {'recently_reviewed': recently_reviewed,
                     'comments': comment_list,
-                    "recently_added": recently_added}
+                    "recently_added": recently_added,
+					'add_song_form': SongForm()}
     return render(request, 'treble/index.html', context_dict)
 
 
