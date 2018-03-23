@@ -69,7 +69,7 @@
         </div>
         <div id="reviews" class="row-4">
             <h1>My Reviews</h1>
-            {% if user_profile.comments %}
+            {% if user_profile.comments.count > 0 %}
             <div>
                 <ul class="row review-list">
                     {% for review in user_profile.comments.all %}
