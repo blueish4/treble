@@ -13,6 +13,7 @@
         </div>
         <div id="recommended" class="row-1">
             <h1>Recommended for you</h1>
+            {% if rec_dict %}
             <div>
                 <ul class="link-container">
                     {% for song, reasons in rec_dict.items %}
@@ -35,6 +36,9 @@
                     {% endfor %}
                 </ul>
             </div>
+            {% else %}
+            <h3>No recommendations for now </h3>
+            {% endif %}
         </div>
         <div id="favourites" class="row-3">
             <div class="row">
@@ -44,6 +48,7 @@
                     + Add
                 </button>
             </div>
+            {% if user_profile.favourites.count > 0 %}
             <div>
                 <ul class="link-container">
                     {% for song in user_profile.favourites.all %}
@@ -58,9 +63,13 @@
                     {% endfor %}
                 </ul>
             </div>
+            {% else %}
+            <h3>Looks like you don't have nay favourites yet. Add some by clicking the "+ Add" button above!</h3>
+            {% endif %}
         </div>
         <div id="reviews" class="row-4">
             <h1>My Reviews</h1>
+            {% if user_profile.comments %}
             <div>
                 <ul class="row review-list">
                     {% for review in user_profile.comments.all %}
@@ -77,6 +86,9 @@
                     {% endfor %}
                 </ul>
             </div>
+            {% else %}
+            <h3>Looks like you have not written any reviews yet. Navigate to a song and leave you're opinion on it!</h3>
+            {% endif %}
         </div>
         <div id="add-rec-modal" class="modal fade bd-rec-modal-lg" tabindex="-1" role="dialog"
              aria-labelledby="add-rec-modal-label" aria-hidden="true">
