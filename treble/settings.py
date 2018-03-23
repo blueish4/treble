@@ -95,7 +95,7 @@ REGISTRATION_AUTO_LOGIN = True
 LOGIN_REDIRECT_URL = '/treble/'
 # The page users are directed to if they are not logged in,
 # and are trying to access pages requiring authentication
-LOGIN_URL = '/treble/login/'
+LOGIN_URL = '/treble/auth_login/'
 
 
 # redux user auth email stuff
