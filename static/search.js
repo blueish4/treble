@@ -1,14 +1,15 @@
-$(function(){
+$(function () {
     var search_box = $("#spotify-search");
-    var delay = (function(){
+    var delay = (function () {
         var timer = 0;
-        return function(callback, ms){
-            clearTimeout (timer);
+        return function (callback, ms) {
+            clearTimeout(timer);
             timer = setTimeout(callback, ms);
         };
     })();
-    function spotify_update(){
-        if (search_box.val()===""){
+
+    function spotify_update() {
+        if (search_box.val() === "") {
             return;
         }
         console.log(search_box.val());
@@ -18,7 +19,7 @@ $(function(){
             data: {
                 track: search_box.val()
             }
-        }).done(function(data){
+        }).done(function (data) {
             var suggestions = data.tracks;
             $(".result").remove();
             if (suggestions) {
@@ -35,7 +36,7 @@ $(function(){
                     container.find(".result-head").text(track.track_name + " - " + track.artist);
                     container.find(".result-sub").text(track.album);
                     container.find(".result-img").attr("src", track.artwork_url);
-                    container.find("#result--1").attr("id", "result-" +s);
+                    container.find("#result--1").attr("id", "result-" + s);
                     container.removeClass("d-none");
                     $("#spotify-results").append(container);
                 }
@@ -44,46 +45,53 @@ $(function(){
             }
         });
     }
-    $("#result--1").on("click",function(e){
-        var id_data_map = {"track_name": this.dataset.name,
-                           "artist": this.dataset.artist,
-                           "album": this.dataset.album,
-                           "spotify_uri":this.dataset.uri,
-                           "artwork_url": this.dataset.art};
+
+    $("#result--1").on("click", function (e) {
+        var id_data_map = {
+            "track_name": this.dataset.name,
+            "artist": this.dataset.artist,
+            "album": this.dataset.album,
+            "spotify_uri": this.dataset.uri,
+            "artwork_url": this.dataset.art
+        };
         for (var attr in id_data_map) {
-            var value = $("#id_"+attr);
+            var value = $("#id_" + attr);
             value.val(id_data_map[attr]);
             value.prop("disabled", true);
         }
         return false;
     });
     search_box.on("change", spotify_update);
-    search_box.on("keypress", function(){delay(function(){spotify_update();},200)});
-    $("#add-clear").on("click", function(){
+    search_box.on("keypress", function () {
+        delay(function () {
+            spotify_update();
+        }, 200)
+    });
+    $("#add-clear").on("click", function () {
         var inputs = $("#add-song-form").find("input");
         inputs.val("");
         inputs.prop("disabled", false)
     });
-    $("#add-song-modal").on("show.bs.modal", function(){
+    $("#add-song-modal").on("show.bs.modal", function () {
         search_box.val(search_term);
         $(".result").remove();
         spotify_update();
     });
-    $("#add-song-form").on("submit", function(e){
+    $("#add-song-form").on("submit", function (e) {
         e.preventDefault();
         var data = {};
         var inputs = $(e.target).find("input");
-        inputs = inputs.each(function(a){
+        inputs = inputs.each(function (a) {
             var input = $(inputs[a]);
-            data[input.attr("name")] =  input.val();
+            data[input.attr("name")] = input.val();
         });
         $.ajax({
             url: add_endpoint,
             data: data,
             type: "post",
             dataType: "json"
-        }).done(function(data){
-            if(data.success){
+        }).done(function (data) {
+            if (data.success) {
                 // Somewhat of a hack here. I'd rather have a callback, but not sure how to
                 $("#add-song-modal").modal("hide");
                 add_song_callback(data);

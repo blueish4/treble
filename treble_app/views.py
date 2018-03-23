@@ -186,7 +186,7 @@ def add_song_recommendation(request, song_id):
         # TODO RETURN JSON, esp. on errors
         print(form.errors)
 
-    return render(request, 'treble/add_recommendation.html', {'form': form, 'add_song_form': SongForm()})
+    return JsonResponse({"errors": form.errors})
 
 
 def add_favourite(request):

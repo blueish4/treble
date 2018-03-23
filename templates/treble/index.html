@@ -6,42 +6,42 @@
 {% endblock %}
 
 {% block body_block %}
-<h1>Welcome to Treble!</h1><br />
-<h2>Recently Reviewed </h2>
-  {% if recently_reviewed %}
-	<p>Here is a list of the most recently reviewed songs from our users!</p>
-  <div>
-    <ul class="link-container">
-      {% for song in recently_reviewed %}
-          <li class="song-link">
-              <a href="{% url 'song' song.song_id %}">
-                  <img src="{{ song.artwork_url }}"/>
-                  <div class="song-title">
-                      <p>{{ song.track_name }}</p>
-                  </div>
-              </a>
-          </li>
-      {% endfor %}
-    </ul>
-  </div>
-	{% else %}
-		<h> oopsie, looks like there's nothing in our database! </h>
-	{% endif %}
-<h2>Recently Added</h2>
-  <p>Here is a list of the songs most recently added to our database!</p>
-  <div>
-    <ul class="link-container">
-      {% for song in recently_added %}
-          <li class="song-link">
-              <a href="{% url 'song' song.song_id %}">
-                  <img src="{{ song.artwork_url }}"/>
-                  <div class="song-title">
-                      <p>{{ song.track_name }}</p>
-                  </div>
-              </a>
-          </li>
-      {% endfor %}
-    </ul>
-  </div>
+    <h1>Welcome to Treble!</h1><br/>
+    <h2>Recently Reviewed </h2>
+    {% if recently_reviewed %}
+        <p>Here is a list of the most recently reviewed songs from our users!</p>
+        <div>
+            <ul class="link-container">
+                {% for song in recently_reviewed %}
+                    <li class="song-link">
+                        <a href="{% url 'song' song.song_id %}">
+                            <img src="{{ song.artwork_url }}"/>
+                            <div class="song-title">
+                                <p>{{ song.track_name }}</p>
+                            </div>
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% else %}
+        <h2> oopsie, looks like there's nothing in our database!</h2>
+    {% endif %}
+    <h2>Recently Added</h2>
+    <p>Here is a list of the songs most recently added to our database!</p>
+    <div>
+        <ul class="link-container">
+            {% for song in recently_added %}
+                <li class="song-link">
+                    <a href="{% url 'song' song.song_id %}">
+                        <img src="{{ song.artwork_url }}"/>
+                        <div class="song-title">
+                            <p>{{ song.track_name }}</p>
+                        </div>
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
 
 {% endblock %}
