@@ -35,7 +35,7 @@ class UserProfile(models.Model):
 
     username_slug = models.SlugField(unique=True)
     favourites = models.ManyToManyField(Song, symmetrical=False)
-    picture = models.ImageField(upload_to='profile_images', blank=True, default='')
+    picture = models.ImageField(upload_to='profile_images', blank=True, default="profile_images/default_pic.png")
 
     comments = models.ManyToManyField("Comment", symmetrical=False)
 
