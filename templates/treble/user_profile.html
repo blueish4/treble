@@ -12,9 +12,9 @@
             <h1 class="col col-lg-2">{{ profile }}</h1>
 
         </div>
-        <h2 class="col col-lg-2">{{ profile.user.email }}</h2>
         <div id="favourites" class="row-3">
             <h1>{{ profile }}'s Favourites</h1>
+            {% if profile.favourites %}
             <div>
                 <ul class="link-container">
                     {% for song in profile.favourites.all %}
@@ -29,6 +29,9 @@
                     {% endfor %}
                 </ul>
             </div>
+            {% else %}
+            <h3>Unfortunately this user doesn't have any favourites</h3>
+            {% endif %}
         </div>
         <div id="reviews" class="row-4">
             <h1>{{ profile }}'s Reviews</h1>
@@ -47,6 +50,8 @@
                                 <p class="comment-date">{{ review.datetime|date:"H:i | j M Y" }}</p>
                             </div>
                         {% endfor %}
+                    {% else %}
+                    <h3>Unfortunately this user has not written any reviews</h3>
                     {% endif %}
                 </ul>
             </div>
