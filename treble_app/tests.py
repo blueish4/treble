@@ -17,23 +17,22 @@ class ModelTests(TestCase):
         in_database = songs_in_database[0]
         self.assertEquals(in_database, song)
 
-
     def test_add_comment_to_song(self):
         song = Song(track_name="Shut Up and Dance", song_id=1)
         song.save()
 
         comment = Comment(comment_id=1, message="Overplayed song")
-        comment.song_id=song
+        comment.song_id = song
         comment.save()
 
         song.comments.add(comment)
 
         # Check if comment was saved correctly
         all_comments = song.comments.all()
-        self.assertEquals(all_comments.count(),1)
+        self.assertEquals(all_comments.count(), 1)
 
         first_comment = all_comments[0]
-        self.assertEquals(first_comment,comment)
+        self.assertEquals(first_comment, comment)
         self.assertEquals(first_comment.message, "Overplayed song")
 
     def test_population_script(self):
@@ -73,10 +72,9 @@ class ModelTests(TestCase):
                     if comment.comment_id == user_comment.comment_id:
                         self.assertEquals(comment, user_comment)
 
-
     def test_user_slug_working(self):
         # Create a new User
-        user = User(username="Bob The Builder",id=1)
+        user = User(username="Bob The Builder", id=1)
         # Create a new UserProfile
         user_profile = UserProfile(user=user)
         user.save()
@@ -129,51 +127,54 @@ class ModelTests(TestCase):
 #         user.save()
 #         user_profile.save()
 #
-#         response = self.client.post(reverse('auth_login'), {'username_slug':user_profile.username_slug, 'password':user.password}, follow=True)
+#         response = self.client.post(reverse('auth_login'),
+#                                     {'username_slug':user_profile.username_slug,
+#                                      'password':user.password}, follow=True)
 #         #If login is successful, the user is redirected (302) to homepage (index)
 #         self.assertContains(response.redirect_chain, (reverse('index'),302))
+
 
 class SongViewTests(TestCase):
 
     def test_song_view_non_existent_songs(self):
-        '''If the song does not exist, an appropriate message should be displayed'''
+        """If the song does not exist, an appropriate message should be displayed"""
         try:
-            response = self.client.get(reverse('song', kwargs={"song_id":1}))
+            response = self.client.get(reverse('song', kwargs={"song_id": 1}))
             self.assertEqual(response.status_code, 200)
         except:
             print("Song does not exist")
 
     def test_song_view_negative_id_displays_song_does_not_exist(self):
-        '''If a negative id is provided, the song not found page should appear'''
+        """If a negative id is provided, the song not found page should appear"""
         try:
-            response = self.client.get(reverse('song', kwargs={"song_id":-1}))
+            response = self.client.get(reverse('song', kwargs={"song_id": -1}))
             self.assertEqual(response.status_code, 200)
         except:
             print("Invalid song id")
 
     def test_song_view_existing_song(self):
-        '''If the song exists, then redirect to song page'''
+        """If the song exists, then redirect to song page"""
         song = Song(track_name="Shut Up and Dance", song_id=1)
         song.save()
 
-        response = self.client.get(reverse('song', kwargs={"song_id":1}))
+        response = self.client.get(reverse('song', kwargs={"song_id": 1}))
 
         # Song exists so status code should be 200 OK
-        self.assertEqual(response.status_code,200)
+        self.assertEqual(response.status_code, 200)
 
         # Redirected to song page so page should contain track_name
-        self.assertContains(response,song.track_name)
+        self.assertContains(response, song.track_name)
 
 
 class UserTests(TestCase):
 
     def test_user_profile(self):
         # Create a new User
-        user = User(username="John Smith",id=1)
+        user = User(username="John Smith", id=1)
         # Create a new UserProfile
         user_profile = UserProfile(user=user)
         user.password = "testpassword"
-        #user.set_password("testpassword")
+        # user.set_password("testpassword")
         user.email = "johnsmith@example.com"
         user.save()
         user_profile.save()
@@ -187,14 +188,13 @@ class UserTests(TestCase):
         # Check if username_slug was made correctly
         self.assertEquals(user_profile.username_slug, "john-smith")
 
-
     def test_user_profile_page_view_has_correct_info(self):
         # Create a new User
-        user = User(username="John Smith",id=1)
+        user = User(username="John Smith", id=1)
         # Create a new UserProfile
         user_profile = UserProfile(user=user)
         user.password = "testpassword"
-        #user.set_password("testpassword")
+        # user.set_password("testpassword")
         user.email = "johnsmith@example.com"
         user.save()
         user_profile.save()

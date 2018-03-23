@@ -3,7 +3,6 @@ from treble_app.models import Song, Comment, UserProfile
 from django.contrib.auth.models import User
 import datetime
 from registration.forms import RegistrationFormUniqueEmail
-from django.utils import timezone
 
 
 class SongForm(forms.ModelForm):
@@ -29,12 +28,13 @@ class CommentForm(forms.ModelForm):
         max_length=250, help_text="Please give a review.",
         widget=forms.Textarea(attrs={"class": "col-sm-9 form-control form-control-lg",
                                      "rows": 2}))
-    reaction = forms.IntegerField(max_value=5, min_value=0, widget=forms.Select(choices=Comment.CHOICES,
-                                                                                attrs={"class": "col-sm-9 form-control"}))
+    reaction = forms.IntegerField(max_value=5, min_value=0,
+                                  widget=forms.Select(choices=Comment.CHOICES,
+                                                      attrs={"class": "col-sm-9 form-control"}))
 
     class Meta:
         model = Comment
-        fields = '__all__'  #'datetime')
+        fields = '__all__'
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', '')

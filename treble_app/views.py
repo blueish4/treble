@@ -1,11 +1,11 @@
 from django.shortcuts import render
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
 from django.core import serializers
 from django.core.urlresolvers import reverse
-from treble_app.forms import UserForm, UserProfileForm, SongForm, CommentForm, RecommendationForm, FavouriteForm
+from treble_app.forms import SongForm, CommentForm, RecommendationForm, FavouriteForm
 from treble_app.models import Song, Comment, UserProfile
 from treble_app.spotify_search import search_spotify
 
@@ -18,16 +18,18 @@ def index(request):
     comment_list = Comment.objects.order_by('-datetime')
     recently_reviewed = []
     for comment in comment_list:
-        song = Song.objects.filter(track_name=comment.song_id)
+        song_obj = Song.objects.filter(track_name=comment.song_id)
 
-        if song[0] not in recently_reviewed:
-            recently_reviewed += song
+        if song_obj[0] not in recently_reviewed:
+            recently_reviewed += song_obj
 
         if len(recently_reviewed) == 5:
             break
 
     recently_added = Song.objects.order_by('-song_id')[:5]
-    context_dict = {'recently_reviewed':recently_reviewed, 'comments':comment_list, "recently_added":recently_added}
+    context_dict = {'recently_reviewed': recently_reviewed,
+                    'comments': comment_list,
+                    "recently_added": recently_added}
     return render(request, 'treble/index.html', context_dict)
 
 
@@ -41,28 +43,27 @@ def most_recommended(request):
 @login_required  # Can only view other profiles if user is logged in
 def user_profile(request, username_slug):
     user = UserProfile.objects.get(username_slug=username_slug)
-    add_song = SongForm()
     return render(request, 'treble/user_profile.html', {'profile': user,
-                                                        'add_song_form': add_song})
+                                                        'add_song_form': SongForm()})
 
 
 @login_required
 def user_account(request):
     user = request.user
-    user_profile = UserProfile.objects.get(user=user)
+    users_profile = UserProfile.objects.get(user=user)
     context_dict = {'add_song_form': SongForm(),
-                    'user': user, 'user_profile': user_profile}
+                    'user': user, 'user_profile': users_profile}
 
     rec_dict = {}
-    for song in user_profile.favourites.all():
-        for rec_song in song.recommended_songs.all():
+    for fave in users_profile.favourites.all():
+        for rec_song in fave.recommended_songs.all():
             if rec_song in rec_dict.keys():
-                rec_dict[rec_song].append(song)
+                rec_dict[rec_song].append(fave)
             else:
-                rec_dict[rec_song] = [song]
+                rec_dict[rec_song] = [fave]
 
     context_dict['rec_dict'] = rec_dict
-    context_dict['favourite_form'] = FavouriteForm(request.POST, username_slug=user_profile.username_slug)
+    context_dict['favourite_form'] = FavouriteForm(request.POST, username_slug=users_profile.username_slug)
     return render(request, 'treble/user_account.html', context_dict)
 
 
@@ -178,28 +179,28 @@ def add_song_recommendation(request, song_id):
     data_copy['song_id'] = song_id
     form.data = data_copy
     if form.is_valid():
-        song = Song.objects.get(song_id=song_id)
+        song_obj = Song.objects.get(song_id=song_id)
         for target in form.cleaned_data['recommended_songs']:
-            song.recommended_songs.add(target)
+            song_obj.recommended_songs.add(target)
         return HttpResponseRedirect(reverse('song', kwargs={"song_id": song_id}))
     else:
         # TODO RETURN JSON, esp. on errors
         print(form.errors)
 
-    return render(request, 'treble/add_recommendation.html', {'form': form, 'add_song_form': SongForm()})
+    return JsonResponse({"errors": form.errors})
 
 
 def add_favourite(request):
     user = request.user
-    user_profile = UserProfile.objects.get(user=user)
-    form = FavouriteForm(request.POST, username_slug=user_profile.username_slug)
+    users_profile = UserProfile.objects.get(user=user)
+    form = FavouriteForm(request.POST, username_slug=users_profile.username_slug)
     data_copy = form.data.copy()
-    data_copy['user'] = user_profile.username_slug
+    data_copy['user'] = users_profile.username_slug
     form.data = data_copy
 
     if form.is_valid():
         for target in form.cleaned_data['favourites']:
-            user_profile.favourites.add(target)
+            users_profile.favourites.add(target)
         return HttpResponseRedirect(reverse('user_account'))
     else:
         print(form.errors)
@@ -231,8 +232,8 @@ def user_logout(request):
 def navbar_search(request):
     search_term = request.GET.get('search_term', None)
 
-    JSONSerializer = serializers.get_serializer("json")
-    json_serializer = JSONSerializer()
+    jsonserializer = serializers.get_serializer("json")
+    json_serializer = jsonserializer()
 
     return_dict = []
 
@@ -244,7 +245,10 @@ def navbar_search(request):
 
         info = []
         for track in data:
-            info.append({'track_name': track['fields']['track_name'], 'artist': track['fields']['artist'], "song_id": track['pk'], 'artwork_url': track['fields']['artwork_url']})
+            info.append({'track_name': track['fields']['track_name'],
+                         'artist': track['fields']['artist'],
+                         "song_id": track['pk'],
+                         'artwork_url': track['fields']['artwork_url']})
 
         return_dict.append({"label": info, "category": "Song", "logged_in": True})
 
@@ -257,8 +261,9 @@ def navbar_search(request):
             profile = UserProfile.objects.get(user=user_match)
 
             info = [{"username": data2[0]['fields']['username'], "username_slug": profile.username_slug}]
-            return_dict.append({"label": info, "category": "User", "logged_in": True })
+            return_dict.append({"label": info, "category": "User", "logged_in": True})
     else:
-        return_dict.append({"label": "You need to be logged in<br>to view users", "category": "User", "logged_in":False})
+        return_dict.append({"label": "You need to be logged in<br>to view users",
+                            "category": "User", "logged_in": False})
 
     return JsonResponse(return_dict, content_type="application/json", safe=False)

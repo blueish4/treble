@@ -71,6 +71,5 @@ class Comment(models.Model):
                (5, '😞'))
     reaction = models.IntegerField(default=0, choices=CHOICES)
 
-
     def __str__(self):
         return self.message

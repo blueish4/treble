@@ -21,7 +21,8 @@ def get_access_token(client_id, client_secret):
 
 #  Get data for a given track_name from Spotify. Return the Response object
 def get_data_from_spotify(search_term, search_type, access_token):
-    search_url = "https://api.spotify.com/v1/search?q="+search_type+ ":" + search_term + "&type=" + search_type + "&limit=5"
+    search_url = "https://api.spotify.com/v1/search?q=" + search_type + \
+                 ":" + search_term + "&type=" + search_type + "&limit=5"
 
     headers = {"Authorization": "Bearer " + access_token}
     response = get(search_url, headers=headers)
@@ -47,7 +48,7 @@ def search_spotify(search_term, search_type):
         with open('token.json', 'w') as json_file:
             dump(token_dict, json_file)
         full_json = get_data_from_spotify(search_term, search_type, token_dict['ACCESS_TOKEN']).json()
-        if (search_type == "track"):
+        if search_type == "track":
             return process_json_track(full_json)
         else:
             return process_json_artist(full_json)
@@ -56,7 +57,7 @@ def search_spotify(search_term, search_type):
         full_json = response.json()
         with open('token.json', 'w') as json_file:
             dump(token_dict, json_file)
-        if (search_type == "track"):
+        if search_type == "track":
             return process_json_track(full_json)
         else:
             return process_json_artist(full_json)
@@ -79,6 +80,7 @@ def process_json_track(json_in):
         json_to_return.append(song_info)
     ret_value = {"tracks": json_to_return}
     return ret_value
+
 
 # Process JSON data to retrieve the genre for a given song
 def process_json_artist(json_in):
