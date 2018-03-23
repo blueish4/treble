@@ -37,7 +37,7 @@ class UserProfile(models.Model):
     favourites = models.ManyToManyField(Song, symmetrical=False)
     picture = models.ImageField(upload_to='profile_images', blank=True, default='')
 
-    comments = models.ManyToManyField("Comment", symmetrical=True)
+    comments = models.ManyToManyField("Comment", symmetrical=False)
 
     def save(self, *args, **kwargs):
         self.username_slug = slugify(self.user.username)
