@@ -1,10 +1,10 @@
-from registration.backends.simple.views import RegistrationView
+from registration.backends.default.views import RegistrationView
 from treble_app.forms import UserProfileForm
 from treble_app.models import UserProfile
 
 
 class MyRegistrationView(RegistrationView):
-    #def get_success_url(self, user):
+    # def get_success_url(self, user):
     #    return '/treble/'
 
     def get_context_data(self, **kwargs):

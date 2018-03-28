@@ -30,7 +30,7 @@ def populate():
          "album": "Absolution",
          "spotify_uri": "spotify:track:7xyYsOvq5Ec3P4fr6mM9fD",
          "artwork_url": "https://i.scdn.co/image/ae61915fc3f4b3019200ba6ee58a2a85866461bf",
-         "recommended_songs": [4]},
+         "recommended_songs": []},
         {"song_id": 3,
          "track_name": "Fix You",
          "artist": "Coldplay",
@@ -46,7 +46,7 @@ def populate():
          "album": "DAMN.",
          "spotify_uri": "spotify:track:6rZssCJPEdQnyeEdNLKsr8",
          "artwork_url": "https://i.scdn.co/image/661e1a935e2eacdd45c05ef618565535e7bed2ad",
-         "recommended_songs": [2]},
+         "recommended_songs": []},
         {"song_id": 5,
          "track_name": "Counting Stars",
          "artist": "OneRepublic",
@@ -59,27 +59,32 @@ def populate():
 
     # List of dictionaries containing Users
     comments = [
-        {"song_id": 1,
+        {"comment_id": 1,
+         "song_id": 1,
          "username": "Sir_Ri",
          "message": "This is a very good song.",
          "reaction": 2},
 
-        {"song_id": 1,
+        {"comment_id": 2,
+         "song_id": 1,
          "username": "Alexa",
          "message": "I love this song!",
          "reaction": 1},
 
-        {"song_id": 2,
+        {"comment_id": 3,
+         "song_id": 2,
          "username": "Sir_Ri",
          "message": "This song is amazing!",
          "reaction": 3},
 
-        {"song_id": 4,
+        {"comment_id": 4,
+         "song_id": 4,
          "username": "Bob",
          "message": "Kendrick is GOAT.",
          "reaction": 4},
 
-        {"song_id": 5,
+        {"comment_id": 5,
+         "song_id": 5,
          "username": "Bob",
          "message": "Meh, it's okay I guess",
          "reaction": 5}
@@ -122,7 +127,7 @@ def populate():
         # Comments must be added after both Songs and Users
         new_comment = comments[j]
         song = Song.objects.get(song_id=new_comment['song_id'])
-        c = add_comment(song,
+        c = add_comment(new_comment['comment_id'], song,
                         new_comment['username'], new_comment['message'], new_comment['reaction'])
 
         song.comments.add(c)
@@ -215,9 +220,9 @@ def add_recommendation(add_to, recommendation):
     return True
 
 
-def add_comment(song_id, username, message, reaction):
+def add_comment(comment_id, song_id, username, message, reaction):
     c = Comment.objects.get_or_create(
-        song_id=song_id)[0]
+        song_id=song_id, pk=comment_id)[0]
     c.song_id = song_id
     slug_username = slugify(username)
     u = UserProfile.objects.get(username_slug=slug_username)

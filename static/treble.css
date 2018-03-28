@@ -182,6 +182,7 @@ textarea {
 #picture {
     max-width: 4rem;
     max-height: 4rem;
+    padding: 0;
 }
 
 /* should have been loaded by boostrap, but hasn't for some reason */
