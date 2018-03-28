@@ -1,0 +1,11 @@
+{% extends 'treble/base.html' %}
+{% load staticfiles %}
+
+{% block title_block %}
+    404 - Not Found
+{% endblock %}
+
+{% block body_block %}
+    <h1>That page couldn't be found! <em>(Error 404)</em></h1>
+    <p>The requested page: &quot<em>{{ request_path }}</em>&quot could not be found.</p>
+{% endblock %}
